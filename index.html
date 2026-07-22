@@ -1,0 +1,2118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solace — A Quiet Place to Gather</title>
+    <meta name="description"
+        content="Solace is a calm, 3D virtual social space for introverts. Immersive lounges, cafés, and rooftops." />
+
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600&display=swap"
+        rel="stylesheet" />
+
+    <style>
+        :root {
+            --bg-dark: #0a0a12;
+            --bg-card: rgba(18, 18, 30, 0.92);
+            --accent-lavender: #a78bfa;
+            --accent-teal: #2dd4bf;
+            --accent-gold: #fbbf24;
+            --text-primary: #f1f0ff;
+            --text-muted: #8b8aa8;
+            --border: rgba(167, 139, 250, 0.18);
+            --shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ─── LANDING ─── */
+        #landing {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(ellipse at 30% 40%, #1a0a3a 0%, #0a0a12 60%),
+                radial-gradient(ellipse at 80% 70%, #0a1f2a 0%, transparent 60%);
+            overflow-y: auto;
+        }
+
+        .landing-inner {
+            width: 100%;
+            max-width: 520px;
+            padding: 2.5rem;
+            animation: fadeInUp 0.7s ease both;
+        }
+
+        .logo-mark {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--accent-lavender), var(--accent-teal));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            box-shadow: 0 0 24px rgba(167, 139, 250, 0.4);
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--text-primary);
+        }
+
+        .logo-text span {
+            color: var(--accent-lavender);
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 0.75rem;
+            background: linear-gradient(120deg, #fff 30%, var(--accent-lavender));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .section-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--accent-lavender);
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.25rem;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow);
+        }
+
+        .name-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .name-input:focus {
+            border-color: var(--accent-lavender);
+        }
+
+        .name-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .color-row {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            margin-top: 0.75rem;
+        }
+
+        .color-dot {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .color-dot:hover {
+            transform: scale(1.15);
+        }
+
+        .color-dot.selected {
+            border-color: #fff;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+        }
+
+        .shape-row {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+        }
+
+        .shape-btn {
+            flex: 1;
+            padding: 0.6rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-align: center;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .shape-btn:hover {
+            border-color: var(--accent-lavender);
+            color: var(--text-primary);
+        }
+
+        .shape-btn.selected {
+            background: rgba(167, 139, 250, 0.15);
+            border-color: var(--accent-lavender);
+            color: var(--accent-lavender);
+        }
+
+        .shape-icon {
+            font-size: 1.4rem;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+
+        .room-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+        }
+
+        .room-btn {
+            padding: 1rem 0.5rem;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.22s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .room-btn:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-teal);
+        }
+
+        .room-btn.selected {
+            background: rgba(45, 212, 191, 0.1);
+            border-color: var(--accent-teal);
+        }
+
+        .room-emoji {
+            font-size: 1.8rem;
+            display: block;
+            margin-bottom: 0.4rem;
+        }
+
+        .room-name {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .room-btn.selected .room-name {
+            color: var(--accent-teal);
+        }
+
+        .enter-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--accent-lavender), #7c3aed);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.02em;
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+        }
+
+        .enter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(124, 58, 237, 0.6);
+        }
+
+        /* ─── HUD ─── */
+        #hud {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        #topbar {
+            position: absolute;
+            top: 1.25rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 0.5rem 1.25rem;
+            pointer-events: all;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow);
+        }
+
+        .topbar-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        #topbar-name {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        #topbar-room {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .room-tabs {
+            display: flex;
+            gap: 0.3rem;
+            margin-left: 1rem;
+        }
+
+        .room-tab {
+            padding: 0.3rem 0.8rem;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 20px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .room-tab:hover {
+            color: var(--text-primary);
+        }
+
+        .room-tab.active {
+            background: rgba(167, 139, 250, 0.15);
+            border-color: var(--accent-lavender);
+            color: var(--accent-lavender);
+        }
+
+        #chat-panel {
+            position: absolute;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            width: 300px;
+            pointer-events: all;
+        }
+
+        #chat-messages {
+            max-height: 220px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding-bottom: 0.75rem;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border) transparent;
+        }
+
+        .chat-msg {
+            display: flex;
+            align-items: flex-end;
+            gap: 0.5rem;
+            animation: fadeInUp 0.25s ease;
+        }
+
+        .chat-msg.self {
+            flex-direction: row-reverse;
+        }
+
+        .msg-avatar {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .msg-bubble {
+            max-width: 180px;
+            padding: 0.5rem 0.75rem;
+            border-radius: 14px;
+            font-size: 0.82rem;
+            line-height: 1.5;
+        }
+
+        .chat-msg.self .msg-bubble {
+            background: linear-gradient(135deg, rgba(167, 139, 250, 0.25), rgba(124, 58, 237, 0.2));
+            border: 1px solid rgba(167, 139, 250, 0.3);
+        }
+
+        .chat-msg:not(.self) .msg-bubble {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .msg-name {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            margin-bottom: 0.2rem;
+        }
+
+        #chat-input-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        #chat-input {
+            flex: 1;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 0.6rem 1rem;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            backdrop-filter: blur(20px);
+            transition: border-color 0.2s;
+        }
+
+        #chat-input:focus {
+            border-color: var(--accent-lavender);
+        }
+
+        #chat-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        #chat-send {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--accent-lavender), #7c3aed);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #chat-send:hover {
+            transform: scale(1.1);
+        }
+
+        #presence {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 1.5rem;
+            pointer-events: all;
+        }
+
+        .presence-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            padding-left: 0.25rem;
+        }
+
+        .presence-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .presence-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 0.35rem 0.75rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .presence-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4ade80;
+            box-shadow: 0 0 6px #4ade80;
+            flex-shrink: 0;
+        }
+
+        .presence-name {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        #controls-hint {
+            position: absolute;
+            top: 1.25rem;
+            left: 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0.6rem 0.9rem;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+            pointer-events: none;
+            backdrop-filter: blur(20px);
+        }
+
+        .hint-key {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            padding: 0.05rem 0.4rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.7rem;
+            margin-right: 0.2rem;
+        }
+
+        #mood-panel {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.5rem;
+            pointer-events: all;
+        }
+
+        .mood-row {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .mood-btn {
+            padding: 0.35rem 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+            backdrop-filter: blur(20px);
+        }
+
+        .mood-btn:hover {
+            border-color: var(--accent-lavender);
+            color: var(--text-primary);
+        }
+
+        .mood-btn.active {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+            background: rgba(251, 191, 36, 0.08);
+        }
+
+        .chat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1rem;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow);
+        }
+
+        /* Stars */
+        .stars {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.7);
+            animation: float linear infinite;
+        }
+
+        /* Toast */
+        #toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0.75rem 1.25rem;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            z-index: 9998;
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            backdrop-filter: blur(20px);
+            pointer-events: none;
+            box-shadow: var(--shadow);
+        }
+
+        #toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        #world-container {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-16px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-14px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0)
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(-8px)
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="stars" id="stars"></div>
+
+    <!-- ══════════════════════════ LANDING ══════════════════════════ -->
+    <div id="landing">
+        <div class="landing-inner">
+            <div class="logo-mark">
+                <div class="logo-icon">🌙</div>
+                <div class="logo-text">Sol<span>ace</span></div>
+            </div>
+            <h1>Your Quiet<br>Corner of the World</h1>
+            <p class="subtitle">A calming 3D social space built for introverts — no pressure, no noise. Step inside a
+                real space and simply be.</p>
+
+            <div class="card">
+                <div class="section-label">Your Name</div>
+                <input id="user-name" class="name-input" type="text" placeholder="e.g. Luna, River, Sage…"
+                    maxlength="20" />
+            </div>
+
+            <div class="card">
+                <div class="section-label">Avatar Color</div>
+                <div class="color-row" id="color-picker">
+                    <div class="color-dot selected" data-color="#a78bfa" style="background:#a78bfa"></div>
+                    <div class="color-dot" data-color="#fb7185" style="background:#fb7185"></div>
+                    <div class="color-dot" data-color="#2dd4bf" style="background:#2dd4bf"></div>
+                    <div class="color-dot" data-color="#fbbf24" style="background:#fbbf24"></div>
+                    <div class="color-dot" data-color="#34d399" style="background:#34d399"></div>
+                    <div class="color-dot" data-color="#60a5fa" style="background:#60a5fa"></div>
+                    <div class="color-dot" data-color="#f472b6" style="background:#f472b6"></div>
+                    <div class="color-dot" data-color="#e2e8f0" style="background:#e2e8f0"></div>
+                </div>
+                <div class="section-label" style="margin-top:1.1rem">Avatar Style</div>
+                <div class="shape-row" id="shape-picker">
+                    <button class="shape-btn selected" data-shape="sphere"><span
+                            class="shape-icon">&#9679;</span>Orb</button>
+                    <button class="shape-btn" data-shape="box"><span class="shape-icon">&#9632;</span>Block</button>
+                    <button class="shape-btn" data-shape="cone"><span class="shape-icon">&#9650;</span>Peak</button>
+                    <button class="shape-btn" data-shape="torus"><span class="shape-icon">&#11835;</span>Ring</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="section-label">Choose Your Space</div>
+                <div class="room-grid" id="room-picker">
+                    <button class="room-btn selected" data-room="lounge"><span class="room-emoji">&#128715;</span><span
+                            class="room-name">Lounge</span></button>
+                    <button class="room-btn" data-room="cafe"><span class="room-emoji">&#9749;</span><span
+                            class="room-name">Cafe</span></button>
+                    <button class="room-btn" data-room="rooftop"><span class="room-emoji">&#127748;</span><span
+                            class="room-name">Rooftop</span></button>
+                </div>
+            </div>
+
+            <button class="enter-btn" onclick="enterWorld()">&#10022; Enter Solace</button>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════ 3D WORLD ══════════════════════════ -->
+    <div id="world-container">
+        <a-scene id="scene" renderer="antialias:true;colorManagement:true;" shadow="type:pcfsoft" embedded
+            style="width:100%;height:100vh">
+
+            <!-- ═══════════════════════════════════════════════════
+       LOUNGE — Rich purple-wood interior with fireplace
+  ═══════════════════════════════════════════════════ -->
+            <a-entity id="room-lounge">
+
+                <!-- Hardwood Floor — warm walnut planks -->
+                <a-plane id="lounge-floor" rotation="-90 0 0" width="28" height="28" position="0 0 0"
+                    material="color:#4a3222;roughness:0.6;metalness:0.05"></a-plane>
+                <!-- Floor plank lines -->
+                <a-plane rotation="-90 0 0" width="0.05" height="28" material="color:#2a1a0e;shader:flat;opacity:0.6"
+                    position="-4 0.01 0"></a-plane>
+                <a-plane rotation="-90 0 0" width="0.05" height="28" material="color:#2a1a0e;shader:flat;opacity:0.6"
+                    position="-2 0.01 0"></a-plane>
+                <a-plane rotation="-90 0 0" width="0.05" height="28" material="color:#2a1a0e;shader:flat;opacity:0.6"
+                    position="0  0.01 0"></a-plane>
+                <a-plane rotation="-90 0 0" width="0.05" height="28" material="color:#2a1a0e;shader:flat;opacity:0.6"
+                    position="2  0.01 0"></a-plane>
+                <a-plane rotation="-90 0 0" width="0.05" height="28" material="color:#2a1a0e;shader:flat;opacity:0.6"
+                    position="4  0.01 0"></a-plane>
+
+                <!-- Ceiling with coffered detail -->
+                <a-box position="0 4.5 0" width="28" height="0.25" depth="28"
+                    material="color:#342648;roughness:0.8"></a-box>
+                <!-- Ceiling beams -->
+                <a-box position="-6 4.3 0" width="0.5" height="0.4" depth="28"
+                    material="color:#281b3a;roughness:0.8"></a-box>
+                <a-box position="0  4.3 0" width="0.5" height="0.4" depth="28"
+                    material="color:#281b3a;roughness:0.8"></a-box>
+                <a-box position="6  4.3 0" width="0.5" height="0.4" depth="28"
+                    material="color:#281b3a;roughness:0.8"></a-box>
+
+                <!-- Back wall — elegant violet panelling -->
+                <a-box position="0 2.25 -14" width="28" height="4.5" depth="0.3"
+                    material="color:#2d2145;roughness:0.8"></a-box>
+                <!-- Wall panels (inset) -->
+                <a-box position="-7 2.25 -13.8" width="4.5" height="3.2" depth="0.05"
+                    material="color:#3e2e5c;roughness:0.8"></a-box>
+                <a-box position="0  2.25 -13.8" width="4.5" height="3.2" depth="0.05"
+                    material="color:#3e2e5c;roughness:0.8"></a-box>
+                <a-box position="7  2.25 -13.8" width="4.5" height="3.2" depth="0.05"
+                    material="color:#3e2e5c;roughness:0.8"></a-box>
+
+                <!-- Left wall -->
+                <a-box position="-14 2.25 0" width="0.3" height="4.5" depth="28"
+                    material="color:#2d2145;roughness:0.8"></a-box>
+                <!-- Right wall -->
+                <a-box position="14 2.25 0" width="0.3" height="4.5" depth="28"
+                    material="color:#130e1e;roughness:1"></a-box>
+
+                <!-- Wainscoting trim (lower wall rail) -->
+                <a-box position="0 0.9 -13.95" width="28" height="0.1" depth="0.05"
+                    material="color:#3d2f5c;roughness:0.6"></a-box>
+                <a-box position="-13.95 0.9 0" width="0.05" height="0.1" depth="28"
+                    material="color:#3d2f5c;roughness:0.6"></a-box>
+                <a-box position="13.95 0.9 0" width="0.05" height="0.1" depth="28"
+                    material="color:#3d2f5c;roughness:0.6"></a-box>
+
+                <!-- ── FIREPLACE (center back wall) ── -->
+                <!-- Stone surround -->
+                <a-box position="0 1.4 -13.7" width="3.2" height="2.8" depth="0.6"
+                    material="color:#1e1830;roughness:1"></a-box>
+                <!-- Mantle shelf -->
+                <a-box position="0 2.9 -13.55" width="3.6" height="0.12" depth="0.75"
+                    material="color:#3a2060;roughness:0.5;metalness:0.15"></a-box>
+                <!-- Firebox opening -->
+                <a-box position="0 0.85 -13.55" width="2.0" height="1.4" depth="0.5"
+                    material="color:#0a0808;roughness:1"></a-box>
+                <!-- Burning logs -->
+                <a-cylinder position="-0.3 0.18 -13.55" radius="0.09" height="1.4" rotation="0 0 20"
+                    material="color:#3d1f0a;roughness:1"></a-cylinder>
+                <a-cylinder position="0.3 0.18 -13.55" radius="0.09" height="1.4" rotation="0 0 -20"
+                    material="color:#2d1208;roughness:1"></a-cylinder>
+                <!-- Fire glow orb (animated) -->
+                <a-sphere position="0 0.5 -13.55" radius="0.35" material="color:#ff6600;shader:flat;opacity:0.85"
+                    animation__size="property:geometry.radius;from:0.32;to:0.42;dir:alternate;loop:true;dur:180;easing:easeInOutSine"
+                    animation__col="property:material.color;from:#ff6600;to:#ff9900;dir:alternate;loop:true;dur:220"></a-sphere>
+                <a-sphere position="-0.12 0.6 -13.52" radius="0.2" material="color:#ff3300;shader:flat;opacity:0.7"
+                    animation__size="property:geometry.radius;from:0.18;to:0.28;dir:alternate;loop:true;dur:140;delay:60"></a-sphere>
+                <a-sphere position="0.14 0.65 -13.52" radius="0.15" material="color:#ffcc00;shader:flat;opacity:0.6"
+                    animation__size="property:geometry.radius;from:0.12;to:0.22;dir:alternate;loop:true;dur:160;delay:30"></a-sphere>
+                <!-- Fire light -->
+                <a-light type="point" position="0 1.0 -12.8" color="#ff7733" intensity="1.8" distance="12"
+                    animation="property:intensity;from:1.4;to:2.2;dir:alternate;loop:true;dur:200"></a-light>
+                <!-- Mantle objects -->
+                <a-cylinder position="-1.2 3.02 -13.4" radius="0.05" height="0.25"
+                    material="color:#8b5cf6;shader:flat;opacity:0.8"></a-cylinder>
+                <a-sphere position="-1.2 3.16 -13.4" radius="0.08" material="color:#7c3aed;shader:flat;opacity:0.9"
+                    animation="property:material.opacity;from:0.6;to:1;dir:alternate;loop:true;dur:2000"></a-sphere>
+                <a-cylinder position="1.2 3.02 -13.4" radius="0.05" height="0.22"
+                    material="color:#2dd4bf;shader:flat;opacity:0.8"></a-cylinder>
+                <a-sphere position="1.2 3.15 -13.4" radius="0.07" material="color:#2dd4bf;shader:flat;opacity:0.9"
+                    animation="property:material.opacity;from:0.5;to:1;dir:alternate;loop:true;dur:2400;delay:300"></a-sphere>
+                <!-- Framed painting above fireplace -->
+                <a-box position="0 3.7 -13.65" width="2.0" height="1.2" depth="0.04"
+                    material="color:#2d2050;roughness:1"></a-box>
+                <a-box position="0 3.7 -13.62" width="1.8" height="1.0" depth="0.03"
+                    material="color:#1a0d3a;roughness:1"></a-box>
+                <a-sphere position="-0.3 3.8 -13.6" radius="0.18"
+                    material="color:#a78bfa;shader:flat;opacity:0.4"></a-sphere>
+                <a-sphere position="0.2 3.6 -13.6" radius="0.12"
+                    material="color:#fb7185;shader:flat;opacity:0.3"></a-sphere>
+
+                <!-- ── CHANDELIER ── -->
+                <a-cylinder position="0 4.35 -5" radius="0.04" height="0.7"
+                    material="color:#3a2a5c;roughness:0.5;metalness:0.8"></a-cylinder>
+                <a-torus position="0 4.0 -5" radius="0.8" radius-tubular="0.03"
+                    material="color:#4a3a6c;roughness:0.3;metalness:0.8"></a-torus>
+                <!-- Chandelier candles -->
+                <a-cylinder position="0.8  3.88 -5" radius="0.03" height="0.14"
+                    material="color:#f1e8c8;roughness:1"></a-cylinder>
+                <a-cylinder position="-0.8 3.88 -5" radius="0.03" height="0.14"
+                    material="color:#f1e8c8;roughness:1"></a-cylinder>
+                <a-cylinder position="0    3.88 -5.8" radius="0.03" height="0.14"
+                    material="color:#f1e8c8;roughness:1"></a-cylinder>
+                <a-cylinder position="0    3.88 -4.2" radius="0.03" height="0.14"
+                    material="color:#f1e8c8;roughness:1"></a-cylinder>
+                <a-sphere position="0.8  4.0 -5" radius="0.07" material="color:#fde68a;shader:flat;opacity:0.9"
+                    animation="property:material.opacity;from:0.7;to:1;dir:alternate;loop:true;dur:1500"></a-sphere>
+                <a-sphere position="-0.8 4.0 -5" radius="0.07" material="color:#fde68a;shader:flat;opacity:0.9"
+                    animation="property:material.opacity;from:0.7;to:1;dir:alternate;loop:true;dur:1800;delay:200"></a-sphere>
+                <a-sphere position="0    4.0 -5.8" radius="0.07" material="color:#fde68a;shader:flat;opacity:0.9"
+                    animation="property:material.opacity;from:0.7;to:1;dir:alternate;loop:true;dur:1200;delay:100"></a-sphere>
+                <a-sphere position="0    4.0 -4.2" radius="0.07" material="color:#fde68a;shader:flat;opacity:0.9"
+                    animation="property:material.opacity;from:0.7;to:1;dir:alternate;loop:true;dur:1600;delay:400"></a-sphere>
+                <a-light type="point" position="0 3.85 -5" color="#e8d5a0" intensity="1.2" distance="12"></a-light>
+
+                <!-- ── AREA RUG ── -->
+                <a-plane rotation="-90 0 0" width="6.5" height="4.5" position="0 0.01 -5"
+                    material="color:#3d1f54;roughness:1"></a-plane>
+                <a-plane rotation="-90 0 0" width="6.0" height="4.0" position="0 0.012 -5"
+                    material="color:#2d1545;roughness:1"></a-plane>
+                <a-plane rotation="-90 0 0" width="5.4" height="3.4" position="0 0.014 -5"
+                    material="color:#3d1f54;roughness:1"></a-plane>
+                <!-- Rug pattern dots -->
+                <a-circle rotation="-90 0 0" radius="0.25" segments="12"
+                    material="color:#6d3a8a;roughness:1;opacity:0.7" position="-2 0.015 -5"></a-circle>
+                <a-circle rotation="-90 0 0" radius="0.25" segments="12"
+                    material="color:#6d3a8a;roughness:1;opacity:0.7" position="2  0.015 -5"></a-circle>
+                <a-circle rotation="-90 0 0" radius="0.15" segments="12"
+                    material="color:#a78bfa;roughness:1;opacity:0.5" position="0 0.015 -5"></a-circle>
+
+                <!-- ── SOFA (3-seater) ── -->
+                <!-- Seat base -->
+                <a-box position="0 0.45 -8.5" width="4.8" height="0.55" depth="1.6"
+                    material="color:#2a1840;roughness:0.9"></a-box>
+                <!-- Back cushion -->
+                <a-box position="0 0.95 -9.2" width="4.8" height="0.9" depth="0.38"
+                    material="color:#341e52;roughness:0.85"></a-box>
+                <!-- Arms -->
+                <a-box position="-2.45 0.7 -8.5" width="0.25" height="0.85" depth="1.6"
+                    material="color:#2a1840;roughness:0.9"></a-box>
+                <a-box position="2.45  0.7 -8.5" width="0.25" height="0.85" depth="1.6"
+                    material="color:#2a1840;roughness:0.9"></a-box>
+                <!-- Seat cushions (3) -->
+                <a-box position="-1.5 0.77 -8.3" width="1.4" height="0.18" depth="1.3"
+                    material="color:#3d2660;roughness:0.8"></a-box>
+                <a-box position="0    0.77 -8.3" width="1.4" height="0.18" depth="1.3"
+                    material="color:#3d2660;roughness:0.8"></a-box>
+                <a-box position="1.5  0.77 -8.3" width="1.4" height="0.18" depth="1.3"
+                    material="color:#3d2660;roughness:0.8"></a-box>
+                <!-- Throw pillow -->
+                <a-box position="-1.8 0.98 -8.6" width="0.5" height="0.5" depth="0.15" rotation="0 15 8"
+                    material="color:#a78bfa;roughness:0.7"></a-box>
+                <a-box position="1.6 0.98 -8.6" width="0.5" height="0.5" depth="0.15" rotation="0 -10 -6"
+                    material="color:#fb7185;roughness:0.7"></a-box>
+
+                <!-- ── ARMCHAIRS (flanking sofa) ── -->
+                <a-box position="-5.5 0.45 -7.5" width="1.6" height="0.55" depth="1.6"
+                    material="color:#1e243a;roughness:0.9"></a-box>
+                <a-box position="-5.5 0.85 -8.2" width="1.6" height="0.8" depth="0.3"
+                    material="color:#232940;roughness:0.85"></a-box>
+                <a-box position="-6.25 0.7 -7.5" width="0.2" height="0.8" depth="1.6"
+                    material="color:#1e243a;roughness:0.9"></a-box>
+                <a-box position="-4.75 0.7 -7.5" width="0.2" height="0.8" depth="1.6"
+                    material="color:#1e243a;roughness:0.9"></a-box>
+
+                <a-box position="5.5 0.45 -7.5" width="1.6" height="0.55" depth="1.6"
+                    material="color:#1e243a;roughness:0.9"></a-box>
+                <a-box position="5.5 0.85 -8.2" width="1.6" height="0.8" depth="0.3"
+                    material="color:#232940;roughness:0.85"></a-box>
+                <a-box position="6.25 0.7 -7.5" width="0.2" height="0.8" depth="1.6"
+                    material="color:#1e243a;roughness:0.9"></a-box>
+                <a-box position="4.75 0.7 -7.5" width="0.2" height="0.8" depth="1.6"
+                    material="color:#1e243a;roughness:0.9"></a-box>
+
+                <!-- ── COFFEE TABLE ── -->
+                <a-box position="0 0.38 -6.5" width="3.0" height="0.08" depth="1.2"
+                    material="color:#3d2c5c;roughness:0.4;metalness:0.3"></a-box>
+                <!-- Table legs -->
+                <a-cylinder position="-1.3 0.19 -6.0" radius="0.06" height="0.38"
+                    material="color:#4a3a6a;roughness:0.5;metalness:0.5"></a-cylinder>
+                <a-cylinder position="1.3  0.19 -6.0" radius="0.06" height="0.38"
+                    material="color:#4a3a6a;roughness:0.5;metalness:0.5"></a-cylinder>
+                <a-cylinder position="-1.3 0.19 -7.0" radius="0.06" height="0.38"
+                    material="color:#4a3a6a;roughness:0.5;metalness:0.5"></a-cylinder>
+                <a-cylinder position="1.3  0.19 -7.0" radius="0.06" height="0.38"
+                    material="color:#4a3a6a;roughness:0.5;metalness:0.5"></a-cylinder>
+                <!-- Items on table -->
+                <a-cylinder position="-0.5 0.44 -6.5" radius="0.12" height="0.14"
+                    material="color:#2dd4bf;roughness:0.3;metalness:0.4;opacity:0.8"></a-cylinder>
+                <a-box position="0.6 0.42 -6.5" width="0.5" height="0.06" depth="0.35"
+                    material="color:#1a1a2e;roughness:1"></a-box>
+
+                <!-- ── FLOOR LAMP (corner) ── -->
+                <a-cylinder position="-11 0 -10" radius="0.12" height="0.12"
+                    material="color:#1a1228;roughness:0.7"></a-cylinder>
+                <a-cylinder position="-11 2.0 -10" radius="0.04" height="4.0"
+                    material="color:#3a2a5c;roughness:0.5;metalness:0.6"></a-cylinder>
+                <a-cone position="-11 4.15 -10" radius-bottom="0.45" radius-top="0.02" height="0.6" rotation="180 0 0"
+                    material="color:#f3e8c0;roughness:0.8;opacity:0.9"></a-cone>
+                <a-light type="point" position="-11 3.6 -10" color="#fde9b0" intensity="1.0" distance="8"></a-light>
+
+                <!-- Corner floor lamp right -->
+                <a-cylinder position="11 0 -10" radius="0.12" height="0.12"
+                    material="color:#1a1228;roughness:0.7"></a-cylinder>
+                <a-cylinder position="11 2.0 -10" radius="0.04" height="4.0"
+                    material="color:#3a2a5c;roughness:0.5;metalness:0.6"></a-cylinder>
+                <a-cone position="11 4.15 -10" radius-bottom="0.45" radius-top="0.02" height="0.6" rotation="180 0 0"
+                    material="color:#f3e8c0;roughness:0.8;opacity:0.9"></a-cone>
+                <a-light type="point" position="11 3.6 -10" color="#fde9b0" intensity="1.0" distance="8"></a-light>
+
+                <!-- ── BOOKCASE (left wall) ── -->
+                <a-box position="-13.7 2.0 -4" width="0.5" height="4.0" depth="3.5"
+                    material="color:#1c1530;roughness:1"></a-box>
+                <!-- Shelves -->
+                <a-box position="-13.7 0.7 -4" width="0.55" height="0.06" depth="3.55"
+                    material="color:#2a1e40;roughness:1"></a-box>
+                <a-box position="-13.7 1.6 -4" width="0.55" height="0.06" depth="3.55"
+                    material="color:#2a1e40;roughness:1"></a-box>
+                <a-box position="-13.7 2.5 -4" width="0.55" height="0.06" depth="3.55"
+                    material="color:#2a1e40;roughness:1"></a-box>
+                <a-box position="-13.7 3.4 -4" width="0.55" height="0.06" depth="3.55"
+                    material="color:#2a1e40;roughness:1"></a-box>
+                <!-- Books (colourful spines) -->
+                <a-box position="-13.7 1.05 -2.7" width="0.06" height="0.7" depth="0.55"
+                    material="color:#7c3aed;roughness:1"></a-box>
+                <a-box position="-13.7 1.05 -3.1" width="0.06" height="0.8" depth="0.55"
+                    material="color:#fb7185;roughness:1"></a-box>
+                <a-box position="-13.7 1.05 -3.5" width="0.06" height="0.65" depth="0.45"
+                    material="color:#2dd4bf;roughness:1"></a-box>
+                <a-box position="-13.7 1.05 -3.9" width="0.06" height="0.75" depth="0.55"
+                    material="color:#fbbf24;roughness:1"></a-box>
+                <a-box position="-13.7 1.05 -4.3" width="0.06" height="0.7" depth="0.5"
+                    material="color:#34d399;roughness:1"></a-box>
+                <a-box position="-13.7 1.05 -4.7" width="0.06" height="0.8" depth="0.55"
+                    material="color:#60a5fa;roughness:1"></a-box>
+                <a-box position="-13.7 1.95 -2.8" width="0.06" height="0.65" depth="0.45"
+                    material="color:#f472b6;roughness:1"></a-box>
+                <a-box position="-13.7 1.95 -3.2" width="0.06" height="0.78" depth="0.55"
+                    material="color:#a78bfa;roughness:1"></a-box>
+                <a-box position="-13.7 1.95 -3.6" width="0.06" height="0.7" depth="0.5"
+                    material="color:#fb7185;roughness:1"></a-box>
+                <a-box position="-13.7 1.95 -4.0" width="0.06" height="0.6" depth="0.4"
+                    material="color:#fbbf24;roughness:1"></a-box>
+                <!-- Small plant on shelf -->
+                <a-cylinder position="-13.7 2.6 -5.1" radius="0.13" height="0.22"
+                    material="color:#3d2209;roughness:1"></a-cylinder>
+                <a-sphere position="-13.7 2.82 -5.1" radius="0.2" material="color:#166534;roughness:1"></a-sphere>
+
+                <!-- ── WINDOW (left wall, moonlit outside) ── -->
+                <a-box position="-13.75 2.4 3" width="0.2" height="2.2" depth="2.8"
+                    material="color:#120d22;roughness:1"></a-box>
+                <!-- Glass pane -->
+                <a-box position="-13.65 2.4 3" width="0.04" height="2.0" depth="2.6"
+                    material="color:#2d4a7a;shader:flat;opacity:0.18"></a-box>
+                <!-- Window frame cross -->
+                <a-box position="-13.6 2.4 3" width="0.05" height="2.0" depth="0.06"
+                    material="color:#1a1230;roughness:1"></a-box>
+                <a-box position="-13.6 2.4 3" width="0.05" height="0.06" depth="2.6"
+                    material="color:#1a1230;roughness:1"></a-box>
+                <!-- Moon outside window -->
+                <a-sphere position="-20 5 3" radius="1.2" material="color:#f0ecda;shader:flat;opacity:0.95"></a-sphere>
+                <a-light type="point" position="-13.4 2.4 3" color="#c8d8ff" intensity="0.6" distance="10"></a-light>
+                <!-- Curtains -->
+                <a-box position="-13.6 2.4 1.6" width="0.08" height="2.4" depth="0.6"
+                    material="color:#3d2060;roughness:1" rotation="0 5 0"></a-box>
+                <a-box position="-13.6 2.4 4.4" width="0.08" height="2.4" depth="0.6"
+                    material="color:#3d2060;roughness:1" rotation="0 -5 0"></a-box>
+
+                <!-- ── SIDE TABLE with lamp ── -->
+                <a-cylinder position="5.5 0.55 -6.2" radius="0.45" height="0.06"
+                    material="color:#2d1e40;roughness:0.5"></a-cylinder>
+                <a-cylinder position="5.5 0.28 -6.2" radius="0.05" height="0.5"
+                    material="color:#3a2a5c;roughness:0.5"></a-cylinder>
+                <a-cylinder position="5.5 0 -6.2" radius="0.3" height="0.04"
+                    material="color:#2d1e40;roughness:0.6"></a-cylinder>
+                <!-- Table lamp -->
+                <a-cylinder position="5.5 0.65 -6.2" radius="0.04" height="0.45"
+                    material="color:#4a3a6c;metalness:0.7;roughness:0.3"></a-cylinder>
+                <a-cone position="5.5 1.02 -6.2" radius-bottom="0.3" radius-top="0.04" height="0.38" rotation="180 0 0"
+                    material="color:#fde8c0;roughness:0.9;opacity:0.95"></a-cone>
+                <a-light type="point" position="5.5 0.9 -6.2" color="#fde0a0" intensity="0.9" distance="6"></a-light>
+
+                <!-- ── FLOATING DUST PARTICLES ── -->
+                <a-sphere position="1 2.5 -4" radius="0.02" material="color:#d8c0ff;shader:flat;opacity:0.6"
+                    animation="property:position;from:1 2.5 -4;to:1.4 3.8 -4;dir:alternate;loop:true;dur:5000;easing:easeInOutSine"></a-sphere>
+                <a-sphere position="-2 2.0 -5" radius="0.018" material="color:#ffd0e8;shader:flat;opacity:0.5"
+                    animation="property:position;from:-2 2.0 -5;to:-2.5 3.2 -4.5;dir:alternate;loop:true;dur:4200;delay:800"></a-sphere>
+                <a-sphere position="3 3.0 -7" radius="0.015" material="color:#c0e8ff;shader:flat;opacity:0.4"
+                    animation="property:position;from:3 3.0 -7;to:3.3 4.0 -7;dir:alternate;loop:true;dur:6000;delay:400"></a-sphere>
+                <a-sphere position="-4 1.8 -3" radius="0.022" material="color:#ffecd0;shader:flat;opacity:0.55"
+                    animation="property:position;from:-4 1.8 -3;to:-4.3 2.8 -3.4;dir:alternate;loop:true;dur:4800;delay:1200"></a-sphere>
+
+                <!-- ── WALL ART (right wall) ── -->
+                <a-box position="13.7 2.8 -4" width="0.1" height="1.6" depth="2.0" material="color:#1a1530;roughness:1"
+                    rotation="0 90 0"></a-box>
+                <a-box position="13.6 2.8 -4" width="0.04" height="1.4" depth="1.8" material="color:#0d0820;roughness:1"
+                    rotation="0 90 0"></a-box>
+                <!-- Abstract swirl in painting -->
+                <a-circle rotation="0 -90 0" radius="0.45" position="13.57 2.8 -4"
+                    material="color:#6d28d9;shader:flat;opacity:0.35"></a-circle>
+                <a-circle rotation="0 -90 0" radius="0.3" position="13.57 2.9 -3.9"
+                    material="color:#a78bfa;shader:flat;opacity:0.3"></a-circle>
+
+                <!-- Ambient & Fill Light -->
+                <a-light type="ambient" color="#d8cbff" intensity="0.9"></a-light>
+                <a-light type="directional" position="0 10 5" color="#ffe0d0" intensity="0.6"></a-light>
+
+                <!-- Lounge Label -->
+                <a-text value="The Lounge" position="0 4.1 -13.5" align="center" color="#a78bfa" width="6"
+                    font="mozillavr"></a-text>
+                <a-text value="settle in. you are welcome here." position="0 3.7 -13.5" align="center" color="#5a4a7a"
+                    width="5" font="mozillavr"></a-text>
+
+            </a-entity>
+
+
+            <!-- ═══════════════════════════════════════════════════
+       CAFÉ — Warm amber wood with barista counter, pastries
+  ═══════════════════════════════════════════════════ -->
+            <a-entity id="room-cafe" visible="false">
+
+                <!-- Terracotta tile floor -->
+                <a-plane rotation="-90 0 0" width="28" height="28" position="0 0 0"
+                    material="color:#2c1a0e;roughness:0.95;metalness:0.02"></a-plane>
+                <!-- Tile grout lines -->
+                <a-plane rotation="-90 0 0" width="0.03" height="28" material="color:#1a0e07;shader:flat;opacity:0.7"
+                    position="-3 0.01 0"></a-plane>
+                <a-plane rotation="-90 0 0" width="0.03" height="28" material="color:#1a0e07;shader:flat;opacity:0.7"
+                    position="0  0.01 0"></a-plane>
+                <a-plane rotation="-90 0 0" width="0.03" height="28" material="color:#1a0e07;shader:flat;opacity:0.7"
+                    position="3  0.01 0"></a-plane>
+                <a-plane rotation="-90 0 0" width="28" height="0.03" material="color:#1a0e07;shader:flat;opacity:0.7"
+                    position="0 0.01 -3"></a-plane>
+                <a-plane rotation="-90 0 0" width="28" height="0.03" material="color:#1a0e07;shader:flat;opacity:0.7"
+                    position="0 0.01 0"></a-plane>
+                <a-plane rotation="-90 0 0" width="28" height="0.03" material="color:#1a0e07;shader:flat;opacity:0.7"
+                    position="0 0.01 3"></a-plane>
+
+                <!-- Ceiling plaster -->
+                <a-box position="0 4.5 0" width="28" height="0.25" depth="28"
+                    material="color:#1c1208;roughness:1"></a-box>
+                <!-- Exposed ceiling beams -->
+                <a-box position="-7 4.2 0" width="0.45" height="0.5" depth="28"
+                    material="color:#2c1a08;roughness:1"></a-box>
+                <a-box position="0  4.2 0" width="0.45" height="0.5" depth="28"
+                    material="color:#2c1a08;roughness:1"></a-box>
+                <a-box position="7  4.2 0" width="0.45" height="0.5" depth="28"
+                    material="color:#2c1a08;roughness:1"></a-box>
+
+                <!-- Walls — exposed brick feel -->
+                <a-box position="0 2.25 -14" width="28" height="4.5" depth="0.3"
+                    material="color:#1e1208;roughness:1"></a-box>
+                <a-box position="-14 2.25 0" width="0.3" height="4.5" depth="28"
+                    material="color:#1e1208;roughness:1"></a-box>
+                <a-box position="14  2.25 0" width="0.3" height="4.5" depth="28"
+                    material="color:#1e1208;roughness:1"></a-box>
+                <!-- Brick coursing lines (fake) -->
+                <a-box position="0 1.0 -13.85" width="27" height="0.04" depth="0.05"
+                    material="color:#140c05;roughness:1"></a-box>
+                <a-box position="0 1.5 -13.85" width="27" height="0.04" depth="0.05"
+                    material="color:#140c05;roughness:1"></a-box>
+                <a-box position="0 2.0 -13.85" width="27" height="0.04" depth="0.05"
+                    material="color:#140c05;roughness:1"></a-box>
+                <a-box position="0 2.5 -13.85" width="27" height="0.04" depth="0.05"
+                    material="color:#140c05;roughness:1"></a-box>
+                <a-box position="0 3.0 -13.85" width="27" height="0.04" depth="0.05"
+                    material="color:#140c05;roughness:1"></a-box>
+                <a-box position="0 3.5 -13.85" width="27" height="0.04" depth="0.05"
+                    material="color:#140c05;roughness:1"></a-box>
+
+                <!-- ── BARISTA COUNTER ── -->
+                <!-- Main counter body -->
+                <a-box position="0 1.05 -11.5" width="10" height="2.1" depth="1.4"
+                    material="color:#4a2c10;roughness:0.85"></a-box>
+                <!-- Counter top (marble-ish) -->
+                <a-box position="0 2.15 -11.5" width="10.15" height="0.1" depth="1.55"
+                    material="color:#d4cabb;roughness:0.3;metalness:0.15"></a-box>
+                <!-- Front counter panels -->
+                <a-box position="-3 1.05 -10.82" width="3.8" height="1.9" depth="0.08"
+                    material="color:#3a2008;roughness:1"></a-box>
+                <a-box position="3  1.05 -10.82" width="3.8" height="1.9" depth="0.08"
+                    material="color:#3a2008;roughness:1"></a-box>
+                <!-- Espresso machine -->
+                <a-box position="-2.5 2.55 -11.3" width="1.2" height="0.75" depth="0.85"
+                    material="color:#1a1a1a;roughness:0.25;metalness:0.8"></a-box>
+                <a-box position="-2.5 2.4  -11.3" width="1.3" height="0.12" depth="0.95"
+                    material="color:#0d0d0d;roughness:0.2;metalness:0.9"></a-box>
+                <!-- Portafilters -->
+                <a-cylinder position="-2.9 2.28 -10.9" radius="0.09" height="0.12" rotation="90 0 0"
+                    material="color:#2a2a2a;roughness:0.3;metalness:0.9"></a-cylinder>
+                <a-cylinder position="-2.1 2.28 -10.9" radius="0.09" height="0.12" rotation="90 0 0"
+                    material="color:#2a2a2a;roughness:0.3;metalness:0.9"></a-cylinder>
+                <!-- Steam wand -->
+                <a-cylinder position="-1.6 2.5 -10.95" radius="0.025" height="0.35" rotation="20 0 0"
+                    material="color:#555;roughness:0.2;metalness:0.9"></a-cylinder>
+                <!-- Steam puffs -->
+                <a-sphere position="-1.55 2.8 -10.9" radius="0.08" material="color:#ffffff;shader:flat;opacity:0.35"
+                    animation="property:position;from:-1.55 2.8 -10.9;to:-1.5 3.2 -10.85;dir:alternate;loop:true;dur:1200"></a-sphere>
+                <a-sphere position="-1.5 2.95 -10.85" radius="0.12" material="color:#ffffff;shader:flat;opacity:0.2"
+                    animation="property:position;from:-1.5 2.95 -10.85;to:-1.4 3.4 -10.8;dir:alternate;loop:true;dur:1500;delay:300"></a-sphere>
+                <a-sphere position="-1.4 3.1 -10.8" radius="0.15" material="color:#ffffff;shader:flat;opacity:0.12"
+                    animation="property:position;from:-1.4 3.1 -10.8;to:-1.3 3.6 -10.75;dir:alternate;loop:true;dur:1800;delay:600"></a-sphere>
+                <!-- Coffee grinder -->
+                <a-box position="1.5 2.55 -11.3" width="0.6" height="0.7" depth="0.6"
+                    material="color:#222;roughness:0.3;metalness:0.7"></a-box>
+                <a-cylinder position="1.5 3.0 -11.3" radius="0.2" height="0.3"
+                    material="color:#333;roughness:0.3;metalness:0.7"></a-cylinder>
+                <!-- Cups on counter -->
+                <a-cylinder position="2.8 2.2 -11.1" radius="0.08" height="0.12"
+                    material="color:#e8ddd0;roughness:0.5"></a-cylinder>
+                <a-cylinder position="3.1 2.2 -11.1" radius="0.08" height="0.12"
+                    material="color:#e8ddd0;roughness:0.5"></a-cylinder>
+                <a-cylinder position="3.4 2.2 -11.1" radius="0.08" height="0.12"
+                    material="color:#dbd0c0;roughness:0.5"></a-cylinder>
+                <!-- Pastry display case -->
+                <a-box position="4.2 2.45 -11.4" width="1.4" height="0.55" depth="0.9"
+                    material="color:#ccc;roughness:0.2;metalness:0.3;opacity:0.3"></a-box>
+                <a-box position="4.2 2.2 -11.4" width="1.42" height="0.06" depth="0.92"
+                    material="color:#d4cabb;roughness:0.3"></a-box>
+                <!-- Pastries (small coloured boxes) -->
+                <a-box position="3.9 2.28 -11.4" width="0.25" height="0.1" depth="0.25"
+                    material="color:#d4956a;roughness:0.9"></a-box>
+                <a-box position="4.2 2.28 -11.4" width="0.22" height="0.12" depth="0.22"
+                    material="color:#e8a878;roughness:0.9"></a-box>
+                <a-box position="4.5 2.26 -11.4" width="0.2" height="0.08" depth="0.2"
+                    material="color:#c87850;roughness:0.9"></a-box>
+                <!-- Chalkboard menu -->
+                <a-box position="0 3.2 -13.7" width="6" height="1.6" depth="0.06"
+                    material="color:#1a1a0e;roughness:1"></a-box>
+                <a-box position="0 3.2 -13.64" width="5.7" height="1.3" depth="0.03"
+                    material="color:#0a120a;roughness:1"></a-box>
+                <a-text value="MENU" position="0 3.6 -13.6" align="center" color="#fde68a" width="3.5"
+                    font="mozillavr"></a-text>
+                <a-text value="Matcha Latte  Oat Flat White&#10;Chamomile     Dark Hot Choc" position="0 3.2 -13.6"
+                    align="center" color="#d4c8a0" width="4" font="mozillavr"></a-text>
+
+                <!-- ── CAFÉ TABLES ── -->
+                <!-- Table A (left) -->
+                <a-cylinder position="-5.5 1.0 -6" radius="0.85" height="0.07"
+                    material="color:#5c3412;roughness:0.5"></a-cylinder>
+                <a-cylinder position="-5.5 0.5 -6" radius="0.06" height="0.95"
+                    material="color:#3d2208;roughness:0.7"></a-cylinder>
+                <a-cylinder position="-5.5 0 -6" radius="0.35" height="0.04"
+                    material="color:#3d2208;roughness:0.7"></a-cylinder>
+                <!-- Cup on table A -->
+                <a-cylinder position="-5.5 1.1 -6" radius="0.085" height="0.14"
+                    material="color:#e8ddd0;roughness:0.5"></a-cylinder>
+                <a-cylinder position="-5.5 1.12 -6" radius="0.07" height="0.1"
+                    material="color:#2c1208;roughness:0.3;opacity:0.9"></a-cylinder>
+                <!-- Steam from cup -->
+                <a-sphere position="-5.5 1.28 -6" radius="0.045" material="color:#fff;shader:flat;opacity:0.25"
+                    animation="property:position;from:-5.5 1.28 -6;to:-5.45 1.7 -5.95;dir:alternate;loop:true;dur:2000"></a-sphere>
+
+                <!-- Table B (center) -->
+                <a-cylinder position="0 1.0 -4" radius="0.85" height="0.07"
+                    material="color:#5c3412;roughness:0.5"></a-cylinder>
+                <a-cylinder position="0 0.5 -4" radius="0.06" height="0.95"
+                    material="color:#3d2208;roughness:0.7"></a-cylinder>
+                <a-cylinder position="0 0 -4" radius="0.35" height="0.04"
+                    material="color:#3d2208;roughness:0.7"></a-cylinder>
+                <!-- Books/tablet on table B -->
+                <a-box position="0.2 1.08 -4" width="0.55" height="0.04" depth="0.4"
+                    material="color:#1a1a2e;roughness:1"></a-box>
+                <a-box position="-0.3 1.07 -4" width="0.4" height="0.05" depth="0.3"
+                    material="color:#7c3aed;roughness:0.8"></a-box>
+
+                <!-- Table C (right) -->
+                <a-cylinder position="5.5 1.0 -6" radius="0.85" height="0.07"
+                    material="color:#5c3412;roughness:0.5"></a-cylinder>
+                <a-cylinder position="5.5 0.5 -6" radius="0.06" height="0.95"
+                    material="color:#3d2208;roughness:0.7"></a-cylinder>
+                <a-cylinder position="5.5 0   -6" radius="0.35" height="0.04"
+                    material="color:#3d2208;roughness:0.7"></a-cylinder>
+
+                <!-- ── CHAIRS ── -->
+                <a-box position="-4.0 0.42 -6" width="0.65" height="0.85" depth="0.65"
+                    material="color:#4a2c12;roughness:0.9" rotation="0 -60 0"></a-box>
+                <a-box position="-4.0 0.82 -6.4" width="0.62" height="0.55" depth="0.12"
+                    material="color:#5a3820;roughness:0.9" rotation="0 -60 0"></a-box>
+                <a-box position="-7.0 0.42 -6" width="0.65" height="0.85" depth="0.65"
+                    material="color:#4a2c12;roughness:0.9" rotation="0 60 0"></a-box>
+                <a-box position="-7.0 0.82 -6.4" width="0.62" height="0.55" depth="0.12"
+                    material="color:#5a3820;roughness:0.9" rotation="0 60 0"></a-box>
+                <a-box position="4.0  0.42 -6" width="0.65" height="0.85" depth="0.65"
+                    material="color:#4a2c12;roughness:0.9" rotation="0 60 0"></a-box>
+                <a-box position="7.0  0.42 -6" width="0.65" height="0.85" depth="0.65"
+                    material="color:#4a2c12;roughness:0.9" rotation="0 -60 0"></a-box>
+                <a-box position="-1.2 0.42 -4" width="0.65" height="0.85" depth="0.65"
+                    material="color:#4a2c12;roughness:0.9" rotation="0 160 0"></a-box>
+                <a-box position="1.2  0.42 -4" width="0.65" height="0.85" depth="0.65"
+                    material="color:#4a2c12;roughness:0.9" rotation="0 20 0"></a-box>
+
+                <!-- ── PENDANT LIGHTS ── -->
+                <a-cylinder position="-5.5 4.3 -6" radius="0.02" height="0.6"
+                    material="color:#3a2008;roughness:0.5"></a-cylinder>
+                <a-cone position="-5.5 3.9 -6" radius-bottom="0.3" radius-top="0.02" height="0.4" rotation="180 0 0"
+                    material="color:#c8a050;roughness:0.5;metalness:0.6"></a-cone>
+                <a-light type="point" position="-5.5 3.7 -6" color="#f59e0b" intensity="1.8" distance="7"></a-light>
+
+                <a-cylinder position="5.5 4.3 -6" radius="0.02" height="0.6"
+                    material="color:#3a2008;roughness:0.5"></a-cylinder>
+                <a-cone position="5.5 3.9 -6" radius-bottom="0.3" radius-top="0.02" height="0.4" rotation="180 0 0"
+                    material="color:#c8a050;roughness:0.5;metalness:0.6"></a-cone>
+                <a-light type="point" position="5.5 3.7 -6" color="#f59e0b" intensity="1.8" distance="7"></a-light>
+
+                <a-cylinder position="0 4.3 -4" radius="0.02" height="0.6"
+                    material="color:#3a2008;roughness:0.5"></a-cylinder>
+                <a-cone position="0 3.9 -4" radius-bottom="0.3" radius-top="0.02" height="0.4" rotation="180 0 0"
+                    material="color:#c8a050;roughness:0.5;metalness:0.6"></a-cone>
+                <a-light type="point" position="0 3.7 -4" color="#f59e0b" intensity="1.8" distance="7"></a-light>
+
+                <!-- ── WINDOW SEAT (right wall) ── -->
+                <a-box position="13.55 0.55 2" width="0.7" height="1.1" depth="5"
+                    material="color:#3d2009;roughness:1"></a-box>
+                <a-box position="13.3 1.14 2" width="0.4" height="0.12" depth="5"
+                    material="color:#5c3412;roughness:0.6"></a-box>
+                <!-- Cushion -->
+                <a-box position="13.2 1.26 2" width="0.35" height="0.12" depth="4.8"
+                    material="color:#7c3aed;roughness:0.8"></a-box>
+                <!-- Large windows above seat -->
+                <a-box position="13.65 2.8 2" width="0.15" height="2.2" depth="4.8"
+                    material="color:#1a1008;roughness:1"></a-box>
+                <a-box position="13.6 2.8 2" width="0.04" height="2.0" depth="4.6"
+                    material="color:#a8c8e8;shader:flat;opacity:0.12"></a-box>
+                <!-- Window cross bar -->
+                <a-box position="13.57 2.8 2" width="0.05" height="2.0" depth="0.06"
+                    material="color:#2a1808;roughness:1"></a-box>
+                <a-box position="13.57 2.8 2" width="0.05" height="0.06" depth="4.6"
+                    material="color:#2a1808;roughness:1"></a-box>
+                <a-light type="point" position="12.5 2.5 2" color="#fcd97a" intensity="0.7" distance="9"></a-light>
+                <!-- Outside view (warm daylight through window) -->
+                <a-sphere position="22 6 2" radius="3" material="color:#fde68a;shader:flat;opacity:0.7"></a-sphere>
+
+                <!-- ── HANGING PLANTS ── -->
+                <a-cylinder position="-10 4.35 -2" radius="0.02" height="0.4"
+                    material="color:#3a2008;roughness:0.5"></a-cylinder>
+                <a-sphere position="-10 3.8 -2" radius="0.35" material="color:#166534;roughness:1"></a-sphere>
+                <a-sphere position="-10.25 3.6 -2.15" radius="0.22" material="color:#15803d;roughness:1"></a-sphere>
+                <a-sphere position="-9.75 3.55 -1.85" radius="0.2" material="color:#14532d;roughness:1"></a-sphere>
+                <!-- Vine strands -->
+                <a-cylinder position="-10.1 3.3 -2.1" radius="0.01" height="0.5" rotation="-20 0 -10"
+                    material="color:#14532d;roughness:1"></a-cylinder>
+                <a-cylinder position="-9.9 3.25 -1.9" radius="0.01" height="0.6" rotation="15 0 8"
+                    material="color:#14532d;roughness:1"></a-cylinder>
+
+                <a-cylinder position="10 4.35 -2" radius="0.02" height="0.4"
+                    material="color:#3a2008;roughness:0.5"></a-cylinder>
+                <a-sphere position="10 3.8 -2" radius="0.32" material="color:#166534;roughness:1"></a-sphere>
+                <a-sphere position="9.8 3.6 -1.85" radius="0.2" material="color:#15803d;roughness:1"></a-sphere>
+
+                <!-- ── MAGAZINE RACK ── -->
+                <a-box position="-12 0.8 -9" width="0.3" height="1.6" depth="0.9"
+                    material="color:#3a2008;roughness:1"></a-box>
+                <a-box position="-12 0.8 -9" width="0.25" height="0.05" depth="0.85"
+                    material="color:#2a1206;roughness:1"></a-box>
+                <a-box position="-12 1.2 -9" width="0.25" height="0.05" depth="0.85"
+                    material="color:#2a1206;roughness:1"></a-box>
+                <a-box position="-11.9 0.95 -9" width="0.06" height="0.35" depth="0.7"
+                    material="color:#a78bfa;roughness:1" rotation="0 0 10"></a-box>
+                <a-box position="-11.9 0.95 -9" width="0.06" height="0.32" depth="0.65"
+                    material="color:#fb7185;roughness:1" rotation="0 0 -5"></a-box>
+
+                <!-- Floor plant corner -->
+                <a-cylinder position="-11 0 2" radius="0.38" height="0.7"
+                    material="color:#3d2009;roughness:1"></a-cylinder>
+                <a-sphere position="-11 1.0 2" radius="0.7" material="color:#166534;roughness:1"></a-sphere>
+                <a-sphere position="-11.4 1.2 2.3" radius="0.45" material="color:#15803d;roughness:1"></a-sphere>
+                <a-sphere position="-10.7 1.1 2.4" radius="0.4" material="color:#14532d;roughness:1"></a-sphere>
+
+                <a-light type="ambient" color="#ffebcc" intensity="0.95"></a-light>
+                <a-light type="directional" position="0 10 5" color="#fff4e0" intensity="0.6"></a-light>
+
+                <a-text value="The Cafe" position="0 4.0 -13.5" align="center" color="#fbbf24" width="6"
+                    font="mozillavr"></a-text>
+                <a-text value="stay a while. sip slow." position="0 3.6 -13.5" align="center" color="#7a5020" width="5"
+                    font="mozillavr"></a-text>
+
+            </a-entity>
+
+
+            <!-- ═══════════════════════════════════════════════════
+       ROOFTOP — Night city, pergola, fairy lights, telescope
+  ═══════════════════════════════════════════════════ -->
+            <a-entity id="room-rooftop" visible="false">
+
+                <!-- Concrete roof floor (pebble dash) -->
+                <a-plane rotation="-90 0 0" width="30" height="30" position="0 0 0"
+                    material="color:#131923;roughness:1;metalness:0.02"></a-plane>
+                <!-- Concrete cracks/lines -->
+                <a-plane rotation="-90 0 0" width="0.04" height="30" material="color:#0c1018;shader:flat;opacity:0.6"
+                    position="-5 0.01 0"></a-plane>
+                <a-plane rotation="-90 0 0" width="0.04" height="30" material="color:#0c1018;shader:flat;opacity:0.6"
+                    position="5 0.01 0"></a-plane>
+                <a-plane rotation="-90 0 0" width="30" height="0.04" material="color:#0c1018;shader:flat;opacity:0.6"
+                    position="0 0.01 -5"></a-plane>
+                <a-plane rotation="-90 0 0" width="30" height="0.04" material="color:#0c1018;shader:flat;opacity:0.6"
+                    position="0 0.01 5"></a-plane>
+
+                <!-- ── PARAPET WALLS (low perimeter walls) ── -->
+                <a-box position="0 0.7 -15" width="30" height="1.4" depth="0.45"
+                    material="color:#1f2937;roughness:0.95"></a-box>
+                <a-box position="-15 0.7 0" width="0.45" height="1.4" depth="30"
+                    material="color:#1f2937;roughness:0.95"></a-box>
+                <a-box position="15  0.7 0" width="0.45" height="1.4" depth="30"
+                    material="color:#1f2937;roughness:0.95"></a-box>
+                <a-box position="0 0.7 15" width="30" height="1.4" depth="0.45"
+                    material="color:#1f2937;roughness:0.95"></a-box>
+                <!-- Parapet caps -->
+                <a-box position="0 1.42 -15" width="30.4" height="0.08" depth="0.55"
+                    material="color:#2d3748;roughness:0.8"></a-box>
+                <a-box position="-15 1.42 0" width="0.55" height="0.08" depth="30.4"
+                    material="color:#2d3748;roughness:0.8"></a-box>
+                <a-box position="15  1.42 0" width="0.55" height="0.08" depth="30.4"
+                    material="color:#2d3748;roughness:0.8"></a-box>
+
+                <!-- ── CITY SKYLINE (back wall illusion) ── -->
+                <!-- Tall skyscraper -->
+                <a-box position="-11 10 -14.6" width="2.8" height="20" depth="0.5"
+                    material="color:#0d1420;roughness:1"></a-box>
+                <!-- Mid tower -->
+                <a-box position="-6.5 6 -14.6" width="2.5" height="12" depth="0.5"
+                    material="color:#0f1827;roughness:1"></a-box>
+                <!-- Tallest spire -->
+                <a-box position="-1.5 14 -14.6" width="2.2" height="28" depth="0.5"
+                    material="color:#0a1018;roughness:1"></a-box>
+                <!-- Antenna -->
+                <a-cylinder position="-1.5 28.5 -14.6" radius="0.06" height="3"
+                    material="color:#0d1420;roughness:1"></a-cylinder>
+                <a-sphere position="-1.5 30.2 -14.6" radius="0.12" material="color:#ff2200;shader:flat;opacity:0.9"
+                    animation="property:material.opacity;from:0.4;to:1;dir:alternate;loop:true;dur:900"></a-sphere>
+                <!-- Wide office block -->
+                <a-box position="3  8 -14.6" width="4" height="16" depth="0.5"
+                    material="color:#0e1825;roughness:1"></a-box>
+                <!-- Narrow spire -->
+                <a-box position="7.5 12 -14.6" width="1.8" height="24" depth="0.5"
+                    material="color:#0a1018;roughness:1"></a-box>
+                <!-- Short block -->
+                <a-box position="11.5 5 -14.6" width="3.8" height="10" depth="0.5"
+                    material="color:#0f1a28;roughness:1"></a-box>
+
+                <!-- Building windows (lit) -->
+                <a-box position="-11  7 -14.2" width="0.25" height="0.25" depth="0.05"
+                    material="color:#fbbf24;shader:flat;opacity:0.9"></a-box>
+                <a-box position="-11  9 -14.2" width="0.25" height="0.25" depth="0.05"
+                    material="color:#60a5fa;shader:flat;opacity:0.8"></a-box>
+                <a-box position="-10.4 8 -14.2" width="0.25" height="0.25" depth="0.05"
+                    material="color:#fbbf24;shader:flat;opacity:0.7"
+                    animation="property:material.opacity;from:0.4;to:0.9;dir:alternate;loop:true;dur:3500"></a-box>
+                <a-box position="-1.5  9 -14.2" width="0.25" height="0.25" depth="0.05"
+                    material="color:#fbbf24;shader:flat;opacity:0.85"></a-box>
+                <a-box position="-1.5 11 -14.2" width="0.25" height="0.25" depth="0.05"
+                    material="color:#fb7185;shader:flat;opacity:0.8"></a-box>
+                <a-box position="-0.9 10 -14.2" width="0.25" height="0.25" depth="0.05"
+                    material="color:#fbbf24;shader:flat;opacity:0.9"
+                    animation="property:material.opacity;from:0.5;to:1;dir:alternate;loop:true;dur:2800"></a-box>
+                <a-box position="3    5 -14.2" width="0.25" height="0.25" depth="0.05"
+                    material="color:#a78bfa;shader:flat;opacity:0.85"></a-box>
+                <a-box position="3    7 -14.2" width="0.25" height="0.25" depth="0.05"
+                    material="color:#fbbf24;shader:flat;opacity:0.75"></a-box>
+                <a-box position="3.6  6 -14.2" width="0.25" height="0.25" depth="0.05"
+                    material="color:#60a5fa;shader:flat;opacity:0.8"
+                    animation="property:material.opacity;from:0.4;to:0.9;dir:alternate;loop:true;dur:4200"></a-box>
+                <a-box position="7.5  9 -14.2" width="0.25" height="0.25" depth="0.05"
+                    material="color:#fbbf24;shader:flat;opacity:0.9"></a-box>
+                <a-box position="11.5 3 -14.2" width="0.25" height="0.25" depth="0.05"
+                    material="color:#fbbf24;shader:flat;opacity:0.8"></a-box>
+                <a-box position="11.5 4 -14.2" width="0.25" height="0.25" depth="0.05"
+                    material="color:#fb7185;shader:flat;opacity:0.7"
+                    animation="property:material.opacity;from:0.3;to:0.85;dir:alternate;loop:true;dur:3100"></a-box>
+
+                <!-- City glow on horizon -->
+                <a-box position="0 1.5 -14.9" width="30" height="3" depth="0.1"
+                    material="color:#1a3050;shader:flat;opacity:0.4"></a-box>
+
+                <!-- ── MOON + STARS ── -->
+                <a-sphere position="8 22 -12" radius="2.0" material="color:#f0ecda;shader:flat;opacity:0.95"></a-sphere>
+                <!-- Moon craters -->
+                <a-sphere position="7.2 21.5 -11.2" radius="0.3"
+                    material="color:#d8d4c0;shader:flat;opacity:0.9"></a-sphere>
+                <a-sphere position="8.8 22.6 -11.5" radius="0.2"
+                    material="color:#d8d4c0;shader:flat;opacity:0.9"></a-sphere>
+                <a-light type="point" position="8 22 -12" color="#d0deff" intensity="0.55" distance="50"></a-light>
+                <!-- Stars -->
+                <a-sphere position="-9  20 -11" radius="0.07" material="color:#fff;shader:flat;opacity:0.95"
+                    animation="property:material.opacity;from:0.4;to:1;dir:alternate;loop:true;dur:2200"></a-sphere>
+                <a-sphere position="-4  22 -9" radius="0.06" material="color:#fff;shader:flat;opacity:0.9"
+                    animation="property:material.opacity;from:0.3;to:0.9;dir:alternate;loop:true;dur:1800;delay:300"></a-sphere>
+                <a-sphere position="1   19 -10" radius="0.08" material="color:#fff;shader:flat;opacity:1"
+                    animation="property:material.opacity;from:0.5;to:1;dir:alternate;loop:true;dur:2600;delay:700"></a-sphere>
+                <a-sphere position="5   23 -8" radius="0.05" material="color:#d0d8ff;shader:flat;opacity:0.9"
+                    animation="property:material.opacity;from:0.4;to:1;dir:alternate;loop:true;dur:3000;delay:400"></a-sphere>
+                <a-sphere position="-13 21 -7" radius="0.06" material="color:#ffd8f0;shader:flat;opacity:0.8"
+                    animation="property:material.opacity;from:0.3;to:0.8;dir:alternate;loop:true;dur:2000;delay:900"></a-sphere>
+                <a-sphere position="12  18 -10" radius="0.05" material="color:#d8fff0;shader:flat;opacity:0.85"
+                    animation="property:material.opacity;from:0.4;to:1;dir:alternate;loop:true;dur:2400;delay:600"></a-sphere>
+                <a-sphere position="-7  17 -9" radius="0.04" material="color:#fff;shader:flat;opacity:0.7"
+                    animation="property:material.opacity;from:0.2;to:0.8;dir:alternate;loop:true;dur:3300;delay:1100"></a-sphere>
+                <a-sphere position="3   16 -8" radius="0.06" material="color:#fff;shader:flat;opacity:0.9"
+                    animation="property:material.opacity;from:0.4;to:0.95;dir:alternate;loop:true;dur:1900;delay:200"></a-sphere>
+
+                <!-- ── PERGOLA STRUCTURE ── -->
+                <!-- 4 posts -->
+                <a-cylinder position="-7 2 -4" radius="0.12" height="4.0"
+                    material="color:#1f2937;roughness:0.8;metalness:0.3"></a-cylinder>
+                <a-cylinder position="7  2 -4" radius="0.12" height="4.0"
+                    material="color:#1f2937;roughness:0.8;metalness:0.3"></a-cylinder>
+                <a-cylinder position="-7 2 4" radius="0.12" height="4.0"
+                    material="color:#1f2937;roughness:0.8;metalness:0.3"></a-cylinder>
+                <a-cylinder position="7  2 4" radius="0.12" height="4.0"
+                    material="color:#1f2937;roughness:0.8;metalness:0.3"></a-cylinder>
+                <!-- Top beams (lengthwise) -->
+                <a-box position="-7 4.05 0" width="0.14" height="0.14" depth="8.3"
+                    material="color:#1f2937;roughness:0.8;metalness:0.3"></a-box>
+                <a-box position="7  4.05 0" width="0.14" height="0.14" depth="8.3"
+                    material="color:#1f2937;roughness:0.8;metalness:0.3"></a-box>
+                <!-- Top beams (widthwise) -->
+                <a-box position="0 4.05 -4" width="14.3" height="0.14" depth="0.14"
+                    material="color:#1f2937;roughness:0.8;metalness:0.3"></a-box>
+                <a-box position="0 4.05 0" width="14.3" height="0.14" depth="0.14"
+                    material="color:#1f2937;roughness:0.8;metalness:0.3"></a-box>
+                <a-box position="0 4.05 4" width="14.3" height="0.14" depth="0.14"
+                    material="color:#1f2937;roughness:0.8;metalness:0.3"></a-box>
+
+                <!-- ── FAIRY STRING LIGHTS on pergola ── -->
+                <a-sphere position="-6 3.85 -4" radius="0.07" material="color:#fde68a;shader:flat;opacity:0.95"
+                    animation="property:material.opacity;from:0.6;to:1;dir:alternate;loop:true;dur:750"></a-sphere>
+                <a-sphere position="-4 3.85 -4" radius="0.07" material="color:#fde68a;shader:flat;opacity:0.9"
+                    animation="property:material.opacity;from:0.7;to:1;dir:alternate;loop:true;dur:820;delay:80"></a-sphere>
+                <a-sphere position="-2 3.85 -4" radius="0.07" material="color:#fde68a;shader:flat;opacity:0.95"
+                    animation="property:material.opacity;from:0.5;to:1;dir:alternate;loop:true;dur:690;delay:160"></a-sphere>
+                <a-sphere position="0  3.85 -4" radius="0.07" material="color:#fde68a;shader:flat;opacity:0.9"
+                    animation="property:material.opacity;from:0.65;to:1;dir:alternate;loop:true;dur:770;delay:240"></a-sphere>
+                <a-sphere position="2  3.85 -4" radius="0.07" material="color:#fde68a;shader:flat;opacity:0.95"
+                    animation="property:material.opacity;from:0.7;to:1;dir:alternate;loop:true;dur:840;delay:320"></a-sphere>
+                <a-sphere position="4  3.85 -4" radius="0.07" material="color:#fde68a;shader:flat;opacity:0.9"
+                    animation="property:material.opacity;from:0.5;to:1;dir:alternate;loop:true;dur:710;delay:400"></a-sphere>
+                <a-sphere position="6  3.85 -4" radius="0.07" material="color:#fde68a;shader:flat;opacity:0.95"
+                    animation="property:material.opacity;from:0.6;to:1;dir:alternate;loop:true;dur:780;delay:480"></a-sphere>
+                <a-sphere position="-6 3.85 0" radius="0.07" material="color:#fde68a;shader:flat;opacity:0.9"
+                    animation="property:material.opacity;from:0.7;to:1;dir:alternate;loop:true;dur:660;delay:560"></a-sphere>
+                <a-sphere position="-3 3.85 0" radius="0.07" material="color:#fde68a;shader:flat;opacity:0.95"
+                    animation="property:material.opacity;from:0.5;to:1;dir:alternate;loop:true;dur:800;delay:640"></a-sphere>
+                <a-sphere position="0  3.85 0" radius="0.07" material="color:#fde68a;shader:flat;opacity:0.9"
+                    animation="property:material.opacity;from:0.65;to:1;dir:alternate;loop:true;dur:730;delay:720"></a-sphere>
+                <a-sphere position="3  3.85 0" radius="0.07" material="color:#fde68a;shader:flat;opacity:0.95"
+                    animation="property:material.opacity;from:0.6;to:1;dir:alternate;loop:true;dur:860;delay:800"></a-sphere>
+                <a-sphere position="6  3.85 0" radius="0.07" material="color:#fde68a;shader:flat;opacity:0.9"
+                    animation="property:material.opacity;from:0.7;to:1;dir:alternate;loop:true;dur:700;delay:880"></a-sphere>
+                <!-- Fairy light glow -->
+                <a-light type="point" position="0 3.7 -4" color="#fde68a" intensity="0.9" distance="10"></a-light>
+                <a-light type="point" position="0 3.7 0" color="#fde68a" intensity="0.9" distance="10"></a-light>
+
+                <!-- ── LOUNGE CHAIRS ── -->
+                <!-- Chair A -->
+                <a-box position="-3.5 0.22 -6.5" width="1.8" height="0.3" depth="3.5"
+                    material="color:#2d3748;roughness:0.9"></a-box>
+                <a-box position="-3.5 0.7 -8.1" width="1.8" height="1.4" depth="0.25" rotation="-15 0 0"
+                    material="color:#374151;roughness:0.9"></a-box>
+                <!-- Cushion -->
+                <a-box position="-3.5 0.42 -6.5" width="1.7" height="0.14" depth="3.3"
+                    material="color:#4b5563;roughness:0.8"></a-box>
+                <!-- Throw blanket -->
+                <a-box position="-3.5 0.52 -5.5" width="1.5" height="0.08" depth="1.5" rotation="2 5 1"
+                    material="color:#7c3aed;roughness:0.9;opacity:0.95"></a-box>
+
+                <!-- Chair B -->
+                <a-box position="3.5 0.22 -6.5" width="1.8" height="0.3" depth="3.5"
+                    material="color:#2d3748;roughness:0.9"></a-box>
+                <a-box position="3.5 0.7 -8.1" width="1.8" height="1.4" depth="0.25" rotation="-15 0 0"
+                    material="color:#374151;roughness:0.9"></a-box>
+                <a-box position="3.5 0.42 -6.5" width="1.7" height="0.14" depth="3.3"
+                    material="color:#4b5563;roughness:0.8"></a-box>
+
+                <!-- ── OUTDOOR SIDE TABLE ── -->
+                <a-cylinder position="0 0.55 -6.5" radius="0.55" height="0.06"
+                    material="color:#374151;roughness:0.4;metalness:0.5"></a-cylinder>
+                <a-cylinder position="0 0.28 -6.5" radius="0.04" height="0.56"
+                    material="color:#4b5563;roughness:0.5;metalness:0.6"></a-cylinder>
+                <!-- Cup/wine glass on table -->
+                <a-cylinder position="0.2 0.62 -6.5" radius="0.07" height="0.16"
+                    material="color:#d0e8ff;roughness:0.1;metalness:0.2;opacity:0.6"></a-cylinder>
+                <a-cylinder position="-0.2 0.6 -6.5" radius="0.065" height="0.12"
+                    material="color:#ffead0;roughness:0.5;opacity:0.85"></a-cylinder>
+                <a-sphere position="-0.2 0.68 -6.5" radius="0.065" material="color:#f59e0b;shader:flat;opacity:0.6"
+                    animation="property:material.opacity;from:0.4;to:0.8;dir:alternate;loop:true;dur:2500"></a-sphere>
+
+                <!-- ── WATER TOWER ── -->
+                <a-cylinder position="12 2.4 -10" radius="1.2" height="2.4"
+                    material="color:#1a2030;roughness:0.95"></a-cylinder>
+                <a-cone position="12 3.75 -10" radius-bottom="1.3" radius-top="0.1" height="1.0"
+                    material="color:#151e2a;roughness:1"></a-cone>
+                <!-- Tower legs -->
+                <a-cylinder position="11.2 0.9 -9.3" radius="0.08" height="1.8" rotation="10 0 -10"
+                    material="color:#0f1520;roughness:1"></a-cylinder>
+                <a-cylinder position="12.8 0.9 -9.3" radius="0.08" height="1.8" rotation="10 0 10"
+                    material="color:#0f1520;roughness:1"></a-cylinder>
+                <a-cylinder position="12   0.9 -11" radius="0.08" height="1.8" rotation="-10 0 0"
+                    material="color:#0f1520;roughness:1"></a-cylinder>
+
+                <!-- ── AC UNITS ── -->
+                <a-box position="-12 0.4 -9" width="1.4" height="0.8" depth="1.0"
+                    material="color:#1c2433;roughness:0.95;metalness:0.1"></a-box>
+                <a-box position="-12 0.5 -8.5" width="1.2" height="0.6" depth="0.05"
+                    material="color:#1a2230;roughness:1"></a-box>
+
+                <!-- ── TELESCOPE ── -->
+                <a-cylinder position="10 0 -1" radius="0.25" height="0.6"
+                    material="color:#1f2937;roughness:0.7;metalness:0.4"></a-cylinder>
+                <a-cylinder position="10 0.8 -1" radius="0.06" height="1.2" rotation="30 0 0"
+                    material="color:#2d3748;roughness:0.5;metalness:0.5"></a-cylinder>
+                <a-cylinder position="10.28 1.28 -1.2" radius="0.1" height="0.6" rotation="30 0 0"
+                    material="color:#374151;roughness:0.4;metalness:0.6"></a-cylinder>
+
+                <!-- ── POTTED PLANTS (corners) ── -->
+                <a-cylinder position="-13 0 -12" radius="0.4" height="0.7"
+                    material="color:#1f2937;roughness:1"></a-cylinder>
+                <a-sphere position="-13 1.0 -12" radius="0.8" material="color:#14532d;roughness:1"></a-sphere>
+                <a-sphere position="-13.4 1.2 -11.5" radius="0.5" material="color:#15803d;roughness:1"></a-sphere>
+
+                <a-cylinder position="13 0 -12" radius="0.4" height="0.7"
+                    material="color:#1f2937;roughness:1"></a-cylinder>
+                <a-sphere position="13 1.0 -12" radius="0.8" material="color:#14532d;roughness:1"></a-sphere>
+                <a-sphere position="13.4 1.2 -11.5" radius="0.5" material="color:#15803d;roughness:1"></a-sphere>
+
+                <a-light type="ambient" color="#c4dbff" intensity="0.85"></a-light>
+                <a-light type="directional" position="5 15 5" color="#e0eeff" intensity="0.6"></a-light>
+
+                <a-text value="The Rooftop" position="0 2.0 -14.5" align="center" color="#60a5fa" width="7"
+                    font="mozillavr"></a-text>
+                <a-text value="the city sleeps. you rest." position="0 1.5 -14.5" align="center" color="#2a3a50"
+                    width="5" font="mozillavr"></a-text>
+
+            </a-entity>
+
+
+            <!-- ══════════════════ PLAYER AVATAR (Humanoid) ══════════════════ -->
+            <a-entity id="player-avatar" position="0 0 2">
+                <!-- Torso / Jacket -->
+                <a-cylinder id="avatar-body" position="0 0.7 0" radius="0.2" height="0.75"
+                    material="color:#7c3aed;roughness:0.4;metalness:0.2"></a-cylinder>
+                <!-- Collar / Hoodie trim -->
+                <a-torus position="0 1.05 0" radius="0.18" radius-tubular="0.04" rotation="90 0 0"
+                    material="color:#a78bfa;roughness:0.6"></a-torus>
+                <!-- Head -->
+                <a-sphere position="0 1.3 0" radius="0.22" material="color:#fce7f3;roughness:0.8"></a-sphere>
+                <!-- Hair / Beanie -->
+                <a-sphere position="0 1.42 0" radius="0.22" material="color:#a78bfa;roughness:0.6"
+                    scale="1.02 0.7 1.02"></a-sphere>
+                <!-- Eyes -->
+                <a-sphere position="-0.08 1.32 0.18" radius="0.035" material="color:#1e1b4b;shader:flat"></a-sphere>
+                <a-sphere position="0.08  1.32 0.18" radius="0.035" material="color:#1e1b4b;shader:flat"></a-sphere>
+                <!-- Arms -->
+                <a-cylinder position="-0.26 0.7 0" radius="0.065" height="0.55" rotation="0 0 12"
+                    material="color:#6d28d9"></a-cylinder>
+                <a-cylinder position="0.26  0.7 0" radius="0.065" height="0.55" rotation="0 0 -12"
+                    material="color:#6d28d9"></a-cylinder>
+                <!-- Name Tag -->
+                <a-text id="player-name-tag" value="You" position="0 1.7 0" align="center" color="#a78bfa" width="2.8"
+                    font="mozillavr" look-at="#main-camera"></a-text>
+                <a-circle rotation="-90 0 0" radius="0.5" segments="32" material="color:#a78bfa;shader:flat;opacity:0.2"
+                    position="0 0.01 0"></a-circle>
+            </a-entity>
+
+
+            <!-- ══════════════════ LOUNGE SOCIAL GATHERING (Real People) ══════════════════ -->
+            <a-entity id="lounge-people">
+                <!-- Group 1: Fireplace Cozy Chat (Luna & River) -->
+                <!-- Luna (Sitting in left armchair) -->
+                <a-entity id="person-lounge-luna" position="-5.5 0 -7.2" rotation="0 45 0" class="clickable-person"
+                    onclick="speakPerson('Luna', 'The warmth from this fire is pure comfort... glad you came over.')">
+                    <a-cylinder position="0 0.5 0" radius="0.18" height="0.6"
+                        material="color:#fb7185;roughness:0.5"></a-cylinder>
+                    <a-sphere position="0 1.0 0" radius="0.2" material="color:#fed7aa;roughness:0.8"></a-sphere>
+                    <!-- Hair -->
+                    <a-sphere position="0 1.08 -0.02" radius="0.22" material="color:#881337;roughness:0.9"
+                        scale="1.05 0.9 1.1"></a-sphere>
+                    <!-- Eyes & Smile -->
+                    <a-sphere position="-0.07 1.02 0.16" radius="0.03" material="color:#4c0519;shader:flat"></a-sphere>
+                    <a-sphere position="0.07  1.02 0.16" radius="0.03" material="color:#4c0519;shader:flat"></a-sphere>
+                    <!-- Holding a steaming mug -->
+                    <a-cylinder position="0.15 0.55 0.2" radius="0.05" height="0.1"
+                        material="color:#fda4af;roughness:0.3"></a-cylinder>
+                    <a-sphere position="0.15 0.63 0.2" radius="0.03" material="color:#fff;shader:flat;opacity:0.4"
+                        animation="property:position;from:0.15 0.63 0.2;to:0.15 0.85 0.2;dir:alternate;loop:true;dur:1600"></a-sphere>
+                    <a-text value="Luna" position="0 1.35 0" align="center" color="#fb7185" width="2.5" font="mozillavr"
+                        look-at="#main-camera"></a-text>
+                    <!-- Speech bubble -->
+                    <a-plane position="0 1.7 0" width="2.2" height="0.5"
+                        material="color:#1e1b4b;opacity:0.85;shader:flat" look-at="#main-camera">
+                        <a-text value="🔥 Fireplace is so cozy..." align="center" color="#fce7f3" width="2.0"
+                            font="mozillavr"></a-text>
+                    </a-plane>
+                </a-entity>
+
+                <!-- River (Sitting in right armchair) -->
+                <a-entity id="person-lounge-river" position="5.5 0 -7.2" rotation="0 -45 0" class="clickable-person"
+                    onclick="speakPerson('River', 'No pressure to talk. Sometimes just sitting together is enough.')">
+                    <a-cylinder position="0 0.5 0" radius="0.19" height="0.6"
+                        material="color:#0d9488;roughness:0.5"></a-cylinder>
+                    <a-sphere position="0 1.0 0" radius="0.2" material="color:#ffedd5;roughness:0.8"></a-sphere>
+                    <!-- Beanie -->
+                    <a-cone position="0 1.15 0" radius-bottom="0.22" radius-top="0.1" height="0.2"
+                        material="color:#2dd4bf;roughness:0.7"></a-cone>
+                    <!-- Eyes -->
+                    <a-sphere position="-0.07 1.01 0.16" radius="0.03" material="color:#134e4a;shader:flat"></a-sphere>
+                    <a-sphere position="0.07  1.01 0.16" radius="0.03" material="color:#134e4a;shader:flat"></a-sphere>
+                    <a-text value="River" position="0 1.35 0" align="center" color="#2dd4bf" width="2.5"
+                        font="mozillavr" look-at="#main-camera"></a-text>
+                    <a-plane position="0 1.7 0" width="2.4" height="0.5"
+                        material="color:#134e4a;opacity:0.85;shader:flat" look-at="#main-camera">
+                        <a-text value="🎧 Listening to soft rain" align="center" color="#ccfbf1" width="2.2"
+                            font="mozillavr"></a-text>
+                    </a-plane>
+                </a-entity>
+
+                <!-- Group 2: Sofa Friends (Kai & Maya) -->
+                <!-- Kai (Sitting on left couch cushion) -->
+                <a-entity id="person-lounge-kai" position="-1.2 0 -8.1" rotation="0 15 0" class="clickable-person"
+                    onclick="speakPerson('Kai', 'Hey! We saved a spot on the couch if you want to sit.')">
+                    <a-cylinder position="0 0.5 0" radius="0.2" height="0.6"
+                        material="color:#3b82f6;roughness:0.5"></a-cylinder>
+                    <a-sphere position="0 1.0 0" radius="0.2" material="color:#fde047;roughness:0.8"></a-sphere>
+                    <a-sphere position="0 1.1 0" radius="0.21" material="color:#1e3a8a;roughness:0.9"
+                        scale="1 0.6 1"></a-sphere>
+                    <a-sphere position="-0.07 1.01 0.16" radius="0.03" material="color:#1e3a8a;shader:flat"></a-sphere>
+                    <a-sphere position="0.07  1.01 0.16" radius="0.03" material="color:#1e3a8a;shader:flat"></a-sphere>
+                    <a-text value="Kai" position="0 1.35 0" align="center" color="#60a5fa" width="2.5" font="mozillavr"
+                        look-at="#main-camera"></a-text>
+                </a-entity>
+
+                <!-- Maya (Sitting on right couch cushion) -->
+                <a-entity id="person-lounge-maya" position="1.2 0 -8.1" rotation="0 -15 0" class="clickable-person"
+                    onclick="speakPerson('Maya', 'I brought extra blankets! Feel free to grab one.')">
+                    <a-cylinder position="0 0.5 0" radius="0.18" height="0.6"
+                        material="color:#ec4899;roughness:0.5"></a-cylinder>
+                    <a-sphere position="0 1.0 0" radius="0.2" material="color:#fbcfe8;roughness:0.8"></a-sphere>
+                    <a-sphere position="0 1.05 -0.02" radius="0.23" material="color:#831843;roughness:0.8"></a-sphere>
+                    <a-sphere position="-0.07 1.01 0.16" radius="0.03" material="color:#500724;shader:flat"></a-sphere>
+                    <a-sphere position="0.07  1.01 0.16" radius="0.03" material="color:#500724;shader:flat"></a-sphere>
+                    <a-text value="Maya" position="0 1.35 0" align="center" color="#f472b6" width="2.5" font="mozillavr"
+                        look-at="#main-camera"></a-text>
+                    <a-plane position="0 1.7 0" width="2.4" height="0.5"
+                        material="color:#831843;opacity:0.85;shader:flat" look-at="#main-camera">
+                        <a-text value="✨ Cozy vibes only" align="center" color="#fce7f3" width="2.2"
+                            font="mozillavr"></a-text>
+                    </a-plane>
+                </a-entity>
+
+                <!-- Standing Book Worm (Leo by the Bookshelf) -->
+                <a-entity id="person-lounge-leo" position="-12.5 0 -4.5" rotation="0 75 0" class="clickable-person"
+                    onclick="speakPerson('Leo', 'This bookshelf has amazing quiet-reading recommendations.')">
+                    <a-cylinder position="0 0.75 0" radius="0.2" height="0.75"
+                        material="color:#d97706;roughness:0.5"></a-cylinder>
+                    <a-sphere position="0 1.3 0" radius="0.21" material="color:#feefc3;roughness:0.8"></a-sphere>
+                    <!-- Glasses -->
+                    <a-torus position="-0.08 1.32 0.18" radius="0.04" radius-tubular="0.008"
+                        material="color:#78350f;shader:flat"></a-torus>
+                    <a-torus position="0.08  1.32 0.18" radius="0.04" radius-tubular="0.008"
+                        material="color:#78350f;shader:flat"></a-torus>
+                    <!-- Book in hands -->
+                    <a-box position="0 0.85 0.25" width="0.3" height="0.05" depth="0.2" rotation="20 0 0"
+                        material="color:#1e3a8a"></a-box>
+                    <a-text value="Leo" position="0 1.65 0" align="center" color="#fbbf24" width="2.5" font="mozillavr"
+                        look-at="#main-camera"></a-text>
+                </a-entity>
+            </a-entity>
+
+
+            <!-- ══════════════════ CAFÉ SOCIAL GATHERING (Real People) ══════════════════ -->
+            <a-entity id="cafe-people" visible="false">
+                <!-- Barista (Alex behind counter) -->
+                <a-entity id="person-cafe-alex" position="0 0 -12.5" rotation="0 0 0" class="clickable-person"
+                    onclick="speakPerson('Alex', 'Welcome! Fresh matcha and oat lattes are ready whenever you want one.')">
+                    <a-cylinder position="0 0.75 0" radius="0.21" height="0.75"
+                        material="color:#15803d;roughness:0.5"></a-cylinder>
+                    <!-- Apron -->
+                    <a-box position="0 0.7 0.12" width="0.35" height="0.6" depth="0.04"
+                        material="color:#fef3c7"></a-box>
+                    <a-sphere position="0 1.3 0" radius="0.21" material="color:#ffedd5;roughness:0.8"></a-sphere>
+                    <a-text value="Alex (Barista)" position="0 1.65 0" align="center" color="#fbbf24" width="2.8"
+                        font="mozillavr" look-at="#main-camera"></a-text>
+                    <a-plane position="0 1.95 0" width="2.5" height="0.5"
+                        material="color:#14532d;opacity:0.85;shader:flat" look-at="#main-camera">
+                        <a-text value="☕ Fresh Brewed Coffee" align="center" color="#fef3c7" width="2.3"
+                            font="mozillavr"></a-text>
+                    </a-plane>
+                </a-entity>
+
+                <!-- Café Table Group (Sage & Nina) -->
+                <a-entity id="person-cafe-sage" position="-4.0 0 -6.0" rotation="0 60 0" class="clickable-person"
+                    onclick="speakPerson('Sage', 'Sipping warm drinks and watching the steam... the best afternoon treat.')">
+                    <a-cylinder position="0 0.45 0" radius="0.19" height="0.55"
+                        material="color:#047857;roughness:0.5"></a-cylinder>
+                    <a-sphere position="0 0.95 0" radius="0.2" material="color:#fce7f3;roughness:0.8"></a-sphere>
+                    <a-text value="Sage" position="0 1.3 0" align="center" color="#34d399" width="2.5" font="mozillavr"
+                        look-at="#main-camera"></a-text>
+                </a-entity>
+
+                <a-entity id="person-cafe-nina" position="-7.0 0 -6.0" rotation="0 -60 0" class="clickable-person"
+                    onclick="speakPerson('Nina', 'Quiet cafés are my happy place. Take a seat at our table!')">
+                    <a-cylinder position="0 0.45 0" radius="0.18" height="0.55"
+                        material="color:#854d0e;roughness:0.5"></a-cylinder>
+                    <a-sphere position="0 0.95 0" radius="0.2" material="color:#ffedd5;roughness:0.8"></a-sphere>
+                    <a-text value="Nina" position="0 1.3 0" align="center" color="#fde047" width="2.5" font="mozillavr"
+                        look-at="#main-camera"></a-text>
+                </a-entity>
+
+                <!-- Window Bench Worker (Ethan with Laptop) -->
+                <a-entity id="person-cafe-ethan" position="13.2 0.7 2.0" rotation="0 -90 0" class="clickable-person"
+                    onclick="speakPerson('Ethan', 'Just quietly working on some art with the sunlight coming through.')">
+                    <a-cylinder position="0 0.35 0" radius="0.18" height="0.5"
+                        material="color:#1e40af;roughness:0.5"></a-cylinder>
+                    <a-sphere position="0 0.8 0" radius="0.19" material="color:#fee2e2;roughness:0.8"></a-sphere>
+                    <a-text value="Ethan" position="0 1.15 0" align="center" color="#60a5fa" width="2.5"
+                        font="mozillavr" look-at="#main-camera"></a-text>
+                    <a-plane position="0 1.45 0" width="2.2" height="0.45"
+                        material="color:#1e3a8a;opacity:0.85;shader:flat" look-at="#main-camera">
+                        <a-text value="💻 Zoned in working" align="center" color="#dbeafe" width="2.0"
+                            font="mozillavr"></a-text>
+                    </a-plane>
+                </a-entity>
+            </a-entity>
+
+
+            <!-- ══════════════════ ROOFTOP SOCIAL GATHERING (Real People) ══════════════════ -->
+            <a-entity id="cafe-rooftop-people" visible="false">
+                <!-- Deck Chair Loungers (Sam & Chloe) -->
+                <a-entity id="person-rooftop-sam" position="-3.5 0 -6.5" rotation="-20 0 0" class="clickable-person"
+                    onclick="speakPerson('Sam', 'Look up at the stars... you can see the entire sky from here.')">
+                    <a-cylinder position="0 0.35 0" radius="0.2" height="0.5"
+                        material="color:#0284c7;roughness:0.5"></a-cylinder>
+                    <a-sphere position="0 0.75 0" radius="0.2" material="color:#feefc3;roughness:0.8"></a-sphere>
+                    <a-text value="Sam" position="0 1.1 0" align="center" color="#38bdf8" width="2.5" font="mozillavr"
+                        look-at="#main-camera"></a-text>
+                    <a-plane position="0 1.45 0" width="2.4" height="0.5"
+                        material="color:#0369a1;opacity:0.85;shader:flat" look-at="#main-camera">
+                        <a-text value="🌌 Stargazing under stars" align="center" color="#e0f2fe" width="2.2"
+                            font="mozillavr"></a-text>
+                    </a-plane>
+                </a-entity>
+
+                <!-- Telescope Observer (Chloe) -->
+                <a-entity id="person-rooftop-chloe" position="9.2 0 -1.2" rotation="0 -30 0" class="clickable-person"
+                    onclick="speakPerson('Chloe', 'The telescope is aimed right at Saturn! Come check it out!')">
+                    <a-cylinder position="0 0.7 0" radius="0.19" height="0.7"
+                        material="color:#c026d3;roughness:0.5"></a-cylinder>
+                    <a-sphere position="0 1.2 0" radius="0.2" material="color:#fce7f3;roughness:0.8"></a-sphere>
+                    <a-text value="Chloe" position="0 1.55 0" align="center" color="#e879f9" width="2.5"
+                        font="mozillavr" look-at="#main-camera"></a-text>
+                </a-entity>
+
+                <!-- Railing City Gazer (Noah leaning on railing) -->
+                <a-entity id="person-rooftop-noah" position="0 0 -14.2" rotation="0 180 0" class="clickable-person"
+                    onclick="speakPerson('Noah', 'The city lights below look like twinkling diamonds tonight.')">
+                    <a-cylinder position="0 0.7 0" radius="0.2" height="0.7"
+                        material="color:#475569;roughness:0.5"></a-cylinder>
+                    <a-sphere position="0 1.2 0" radius="0.2" material="color:#ffedd5;roughness:0.8"></a-sphere>
+                    <a-text value="Noah" position="0 1.55 0" align="center" color="#94a3b8" width="2.5" font="mozillavr"
+                        look-at="#main-camera"></a-text>
+                    <a-plane position="0 1.9 0" width="2.3" height="0.5"
+                        material="color:#334155;opacity:0.85;shader:flat" look-at="#main-camera">
+                        <a-text value="🌆 Watching city lights" align="center" color="#f8fafc" width="2.1"
+                            font="mozillavr"></a-text>
+                    </a-plane>
+                </a-entity>
+            </a-entity>
+
+
+            <!-- ══════════════════ CAMERA RIG ══════════════════ -->
+            <a-entity id="rig" position="0 1.6 5" movement-controls="speed: 0.15; fly: false">
+                <a-camera id="main-camera" look-controls="pointerLockEnabled:true" fov="75">
+                    <a-entity position="0 0 -1" cursor raycaster="objects: .clickable-person">
+                        <a-ring color="#fff" radius-inner="0.005" radius-outer="0.01"
+                            material="shader:flat;opacity:0.3"></a-ring>
+                    </a-entity>
+                </a-camera>
+                <!-- VR Controllers (Meta Quest 3S etc) -->
+                <a-entity laser-controls="hand: left" raycaster="objects: .clickable-person; far: 20"></a-entity>
+                <a-entity laser-controls="hand: right" raycaster="objects: .clickable-person; far: 20"></a-entity>
+            </a-entity>
+
+            <!-- Global Scene Lights -->
+            <a-light type="ambient" color="#ffffff" intensity="0.75"></a-light>
+            <a-light type="directional" position="5 20 5" color="#ffffff" intensity="0.85"></a-light>
+
+            <!-- Sky per room -->
+            <a-sky id="world-sky" color="#06040f"></a-sky>
+
+        </a-scene>
+    </div>
+
+
+    <!-- ══════════════════════════ HUD ══════════════════════════ -->
+    <div id="hud">
+
+        <div id="topbar">
+            <div id="topbar-avatar-wrap" class="topbar-avatar" style="background:#a78bfa">Y</div>
+            <div>
+                <div id="topbar-name">...</div>
+                <div id="topbar-room">The Lounge</div>
+            </div>
+            <div class="room-tabs">
+                <button class="room-tab active" data-room="lounge" onclick="switchRoom('lounge',this)">&#128715;
+                    Lounge</button>
+                <button class="room-tab" data-room="cafe" onclick="switchRoom('cafe',this)">&#9749; Cafe</button>
+                <button class="room-tab" data-room="rooftop" onclick="switchRoom('rooftop',this)">&#127748;
+                    Rooftop</button>
+            </div>
+            <button onclick="leaveWorld()"
+                style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;padding:0.2rem"
+                title="Leave">&#10005;</button>
+        </div>
+
+        <div id="controls-hint">
+            <div><span class="hint-key">W A S D</span> Walk around</div>
+            <div><span class="hint-key">Mouse</span> Look (click to lock)</div>
+            <div><span class="hint-key">Esc</span> Release cursor</div>
+            <div><span class="hint-key">Enter</span> Focus chat</div>
+        </div>
+
+        <div id="mood-panel">
+            <div class="mood-row">
+                <button class="mood-btn" onclick="setMood('&#10024; Glowing',this)">&#10024; Glowing</button>
+                <button class="mood-btn" onclick="setMood('&#127769; Quiet',this)">&#127769; Quiet</button>
+                <button class="mood-btn" onclick="setMood('&#9749; Cozy',this)">&#9749; Cozy</button>
+                <button class="mood-btn" onclick="setMood('&#127911; Zoned in',this)">&#127911; Zoned in</button>
+            </div>
+        </div>
+
+        <div id="presence">
+            <div class="presence-title">In this space</div>
+            <div class="presence-list" id="presence-list"></div>
+        </div>
+
+        <div id="chat-panel">
+            <div class="chat-card">
+                <div id="chat-messages"></div>
+                <div id="chat-input-row">
+                    <input id="chat-input" type="text" placeholder="Say something kind..." maxlength="120"
+                        onkeydown="if(event.key==='Enter'){sendChat();event.stopPropagation();}" />
+                    <button id="chat-send" onclick="sendChat()" title="Send">&#10148;</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        // ─── STATE ───
+        const state = { name: 'You', color: '#a78bfa', shape: 'sphere', room: 'lounge', mood: null };
+
+        const ROOMS = {
+            lounge: { label: 'The Lounge', sky: '#1a102f' },
+            cafe: { label: 'The Cafe', sky: '#22140a' },
+            rooftop: { label: 'The Rooftop', sky: '#0a1224' }
+        };
+
+        const NPC_CHATS = {
+            lounge: [
+                { name: 'Luna', color: '#fb7185', msgs: ['hey, glad you made it', 'just here for the quiet vibes', 'the fireplace tonight... so good', 'loving the soft lighting'] },
+                { name: 'River', color: '#2dd4bf', msgs: ['no small talk, just presence', 'anyone else staring at the fire?', 'this is my favourite spot', 'the chandelier is *everything*'] }
+            ],
+            cafe: [
+                { name: 'Luna', color: '#fb7185', msgs: ['ordered my third matcha lol', 'the steam from my cup is hypnotic', 'pastries look amazing today', 'the menu is handwritten, love it'] },
+                { name: 'River', color: '#2dd4bf', msgs: ['found the perfect window seat', 'slow morning, warm coffee, perfect', 'the rain outside is so calming', 'love just sitting and watching'] },
+                { name: 'Sage', color: '#34d399', msgs: ['warm drinks only club ☕', 'pretending the music is my playlist', 'the barista is an artist', 'this place smells incredible'] }
+            ],
+            rooftop: [
+                { name: 'River', color: '#2dd4bf', msgs: ['the moon is incredible tonight', 'city lights are almost peaceful', 'lying under the pergola... perfect', 'stargazed for an hour already'] },
+                { name: 'Sage', color: '#34d399', msgs: ['brought a blanket, sharing if needed', 'spotted Orion tonight', 'fairy lights are my love language', 'the telescope is set up - come look'] }
+            ]
+        };
+
+        const REPLIES = ['totally feel that', 'same energy', 'love that for you', 'appreciated', 'vibe check: passed', 'felt that', 'same same same', 'this is the energy', 'mood', 'sending warmth'];
+
+        // ─── STARS (landing) ───
+        (function () {
+            const c = document.getElementById('stars');
+            for (let i = 0; i < 80; i++) {
+                const s = document.createElement('div'); s.className = 'star';
+                const sz = Math.random() * 2.5 + 0.5;
+                s.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random() * 100}%;top:${Math.random() * 100}%;opacity:${Math.random() * 0.6 + 0.1};animation-duration:${Math.random() * 6 + 4}s;animation-delay:${Math.random() * 5}s;`;
+                c.appendChild(s);
+            }
+        })();
+
+        // ─── PICKERS ───
+        document.querySelectorAll('.color-dot').forEach(d => d.addEventListener('click', () => {
+            document.querySelectorAll('.color-dot').forEach(x => x.classList.remove('selected'));
+            d.classList.add('selected'); state.color = d.dataset.color;
+        }));
+        document.querySelectorAll('.shape-btn').forEach(b => b.addEventListener('click', () => {
+            document.querySelectorAll('.shape-btn').forEach(x => x.classList.remove('selected'));
+            b.classList.add('selected'); state.shape = b.dataset.shape;
+        }));
+        document.querySelectorAll('.room-btn').forEach(b => b.addEventListener('click', () => {
+            document.querySelectorAll('.room-btn').forEach(x => x.classList.remove('selected'));
+            b.classList.add('selected'); state.room = b.dataset.room;
+        }));
+
+        // ─── ENTER WORLD ───
+        function enterWorld() {
+            state.name = document.getElementById('user-name').value.trim() || 'Wanderer';
+            applyAvatar();
+
+            const landing = document.getElementById('landing');
+            landing.style.transition = 'opacity 0.7s ease';
+            landing.style.opacity = '0';
+            setTimeout(() => {
+                landing.style.display = 'none';
+                document.getElementById('hud').style.display = 'block';
+            }, 700);
+
+            document.getElementById('topbar-name').textContent = state.name;
+            const av = document.getElementById('topbar-avatar-wrap');
+            av.textContent = state.name[0].toUpperCase();
+            av.style.background = state.color;
+
+            switchRoom(state.room, document.querySelector('.room-tab[data-room="' + state.room + '"]'));
+            setTimeout(() => seedChat(state.room), 1800);
+            startNPCChatter();
+            showToast('Welcome to Solace, ' + state.name + ' — you are home here.');
+        }
+
+        // ─── AVATAR ───
+        function applyAvatar() {
+            const body = document.getElementById('avatar-body');
+            body.setAttribute('material', 'color:' + state.color + ';roughness:0.3;metalness:0.3');
+            const geos = {
+                sphere: 'primitive:sphere;radius:0.35',
+                box: 'primitive:box;width:0.65;height:0.65;depth:0.65',
+                cone: 'primitive:cone;radiusBottom:0.35;radiusTop:0.02;height:0.7',
+                torus: 'primitive:torus;radius:0.3;radiusTubular:0.1'
+            };
+            body.setAttribute('geometry', geos[state.shape] || geos.sphere);
+            const ring = document.querySelector('#player-avatar a-circle');
+            if (ring) ring.setAttribute('material', 'color:' + state.color + ';shader:flat;opacity:0.15');
+            document.getElementById('player-name-tag').setAttribute('value', state.name);
+            document.getElementById('player-name-tag').setAttribute('color', state.color);
+        }
+
+        // ─── SWITCH ROOM ───
+        function switchRoom(roomKey, tabEl) {
+            ['lounge', 'cafe', 'rooftop'].forEach(r =>
+                document.getElementById('room-' + r).setAttribute('visible', 'false'));
+            document.getElementById('npc-sage').setAttribute('visible', 'false');
+            document.getElementById('room-' + roomKey).setAttribute('visible', 'true');
+            if (roomKey === 'cafe') document.getElementById('npc-sage').setAttribute('visible', 'true');
+
+            document.getElementById('world-sky').setAttribute('color', ROOMS[roomKey].sky);
+            document.getElementById('rig').setAttribute('position', '0 1.6 5');
+
+            document.querySelectorAll('.room-tab').forEach(t => t.classList.remove('active'));
+            if (tabEl) tabEl.classList.add('active');
+            document.getElementById('topbar-room').textContent = ROOMS[roomKey].label;
+            state.room = roomKey;
+            updatePresence(roomKey);
+            clearChat();
+            setTimeout(() => seedChat(roomKey), 900);
+            showToast('Entered ' + ROOMS[roomKey].label);
+        }
+
+        // ─── PRESENCE ───
+        const PRESENCE = { lounge: ['Luna', 'River'], cafe: ['Luna', 'River', 'Sage'], rooftop: ['River', 'Sage'] };
+        const NPC_COLORS = { Luna: '#fb7185', River: '#2dd4bf', Sage: '#34d399' };
+        function updatePresence(room) {
+            const list = document.getElementById('presence-list');
+            list.innerHTML = '<div class="presence-item"><div class="presence-dot"></div><div class="presence-name" style="color:' + state.color + '">' + state.name + ' (you)</div></div>';
+            (PRESENCE[room] || []).forEach(n => {
+                const el = document.createElement('div'); el.className = 'presence-item';
+                el.innerHTML = '<div class="presence-dot"></div><div class="presence-name" style="color:' + NPC_COLORS[n] + '">' + n + '</div>';
+                list.appendChild(el);
+            });
+        }
+
+        // ─── CHAT ───
+        function clearChat() { document.getElementById('chat-messages').innerHTML = ''; }
+        function addMsg(name, text, color, isSelf) {
+            const msgs = document.getElementById('chat-messages');
+            const d = document.createElement('div');
+            d.className = 'chat-msg' + (isSelf ? ' self' : '');
+            d.innerHTML = '<div class="msg-avatar" style="background:' + color + '">' + name[0].toUpperCase() + '</div><div><div class="msg-name">' + name + '</div><div class="msg-bubble">' + text + '</div></div>';
+            msgs.appendChild(d);
+            msgs.scrollTop = msgs.scrollHeight;
+        }
+        function seedChat(room) {
+            (NPC_CHATS[room] || []).forEach((npc, i) =>
+                setTimeout(() => addMsg(npc.name, npc.msgs[0], npc.color, false), i * 1100));
+        }
+        function sendChat() {
+            const inp = document.getElementById('chat-input');
+            const text = inp.value.trim();
+            if (!text) return;
+            addMsg(state.name, text, state.color, true);
+            inp.value = '';
+            setTimeout(() => {
+                const npcs = NPC_CHATS[state.room] || [];
+                if (!npcs.length) return;
+                const npc = npcs[Math.floor(Math.random() * npcs.length)];
+                addMsg(npc.name, REPLIES[Math.floor(Math.random() * REPLIES.length)], npc.color, false);
+            }, 1200 + Math.random() * 1800);
+        }
+        function startNPCChatter() {
+            setInterval(() => {
+                const npcs = NPC_CHATS[state.room] || [];
+                if (!npcs.length || Math.random() > 0.38) return;
+                const npc = npcs[Math.floor(Math.random() * npcs.length)];
+                addMsg(npc.name, npc.msgs[Math.floor(Math.random() * npc.msgs.length)], npc.color, false);
+            }, 18000);
+        }
+
+        // ─── MOOD ───
+        function setMood(mood, btn) {
+            document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('player-name-tag').setAttribute('value', state.name + '\n' + btn.textContent);
+            showToast('Mood: ' + btn.textContent);
+        }
+
+        // ─── LEAVE ───
+        function leaveWorld() {
+            document.getElementById('hud').style.display = 'none';
+            const l = document.getElementById('landing');
+            l.style.display = 'flex'; l.style.opacity = '0';
+            setTimeout(() => { l.style.transition = 'opacity 0.5s'; l.style.opacity = '1'; }, 50);
+            clearChat();
+        }
+
+        // ─── TOAST ───
+        let toastTimer;
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        // ─── KEYBOARD ───
+        document.addEventListener('keydown', e => {
+            if (document.getElementById('hud').style.display !== 'block') return;
+            if (e.key === 'Enter' && document.activeElement !== document.getElementById('chat-input')) {
+                document.getElementById('chat-input').focus(); e.preventDefault();
+            }
+        });
+    </script>
+</body>
+
+</html>
