@@ -10,6 +10,7 @@
 
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component@1.3.3/dist/aframe-environment-component.min.js"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600&display=swap"
         rel="stylesheet" />
@@ -1440,6 +1441,17 @@
                 <a-box position="0 1.5 -14.9" width="30" height="3" depth="0.1"
                     material="color:#1a3050;shader:flat;opacity:0.4"></a-box>
 
+                <!-- Right side skyline -->
+                <a-box position="14.6 8 0" width="0.5" height="16" depth="4" material="color:#0e1825;roughness:1"></a-box>
+                <a-box position="14.6 12 5" width="0.5" height="24" depth="2.5" material="color:#0a1018;roughness:1"></a-box>
+                <a-box position="14.6 6 -5" width="0.5" height="12" depth="3" material="color:#0f1a28;roughness:1"></a-box>
+                <a-box position="14.2 9 5" width="0.05" height="0.25" depth="0.25" material="color:#fbbf24;shader:flat;opacity:0.8"></a-box>
+
+                <!-- Left side skyline -->
+                <a-box position="-14.6 10 -2" width="0.5" height="20" depth="3" material="color:#0d1420;roughness:1"></a-box>
+                <a-box position="-14.6 7 4" width="0.5" height="14" depth="4" material="color:#0f1827;roughness:1"></a-box>
+                <a-box position="-14.2 8 -2" width="0.05" height="0.25" depth="0.25" material="color:#60a5fa;shader:flat;opacity:0.8"></a-box>
+
                 <!-- ── MOON + STARS ── -->
                 <a-sphere position="8 22 -12" radius="2.0" material="color:#f0ecda;shader:flat;opacity:0.95"></a-sphere>
                 <!-- Moon craters -->
@@ -1851,8 +1863,8 @@
             <a-light type="ambient" color="#ffffff" intensity="0.75"></a-light>
             <a-light type="directional" position="5 20 5" color="#ffffff" intensity="0.85"></a-light>
 
-            <!-- Sky per room -->
-            <a-sky id="world-sky" color="#06040f"></a-sky>
+            <!-- Environment per room -->
+            <a-entity id="world-sky" environment="preset: starry; ground: none; dressingAmount: 0; lighting: none; skyType: atmosphere"></a-entity>
 
         </a-scene>
     </div>
@@ -1920,9 +1932,9 @@
         const state = { name: 'You', color: '#a78bfa', shape: 'sphere', room: 'lounge', mood: null };
 
         const ROOMS = {
-            lounge: { label: 'The Lounge', sky: '#1a102f' },
-            cafe: { label: 'The Cafe', sky: '#22140a' },
-            rooftop: { label: 'The Rooftop', sky: '#0a1224' }
+            lounge: { label: 'The Lounge', preset: 'starry' },
+            cafe: { label: 'The Cafe', preset: 'japan' },
+            rooftop: { label: 'The Rooftop', preset: 'starry' }
         };
 
         const NPC_CHATS = {
@@ -2017,7 +2029,7 @@
             document.getElementById('room-' + roomKey).setAttribute('visible', 'true');
             if (roomKey === 'cafe') document.getElementById('npc-sage').setAttribute('visible', 'true');
 
-            document.getElementById('world-sky').setAttribute('color', ROOMS[roomKey].sky);
+            document.getElementById('world-sky').setAttribute('environment', 'preset: ' + ROOMS[roomKey].preset + '; ground: none; dressingAmount: 0; lighting: none; skyType: atmosphere');
             document.getElementById('rig').setAttribute('position', '0 1.6 5');
 
             document.querySelectorAll('.room-tab').forEach(t => t.classList.remove('active'));
